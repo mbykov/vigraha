@@ -1,0 +1,27 @@
+{
+  "name": "flakes",
+  "version": "1.0.0",
+  "description": "xxx",
+  "main": "flakes.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "keywords": [
+    "sanscrit",
+    "conpound",
+    "sandhi",
+    "vigraha",
+    "samasa"
+  ],
+    "dependencies": {
+        "underscore": "*"
+    },
+    "devDependencies": {
+        "salita-component": "*",
+        "uglify-js": "*",
+        "mocha": "*",
+        "should": "*"
+    },
+  "author": "mbykov <m.bykov@gmail.com>",
+  "license": "GNU GPL"
+}
