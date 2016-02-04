@@ -4,7 +4,7 @@
 
 var lat = process.argv.slice(2)[0] || false;
 // var lat2 = process.argv.slice(3)[0] || false;
-// var util = require('util');
+var util = require('util');
 
 var salita = require('salita-component');
 var flakes = require('./index');
@@ -29,7 +29,8 @@ log('_la_:', lat, '_sa_:', samasa);
 var res = flakes.scrape(samasa);
 
 log('flakes:');
-log(res);
+// log(res);
+console.log(util.inspect(res, showHidden=false, depth=null, colorize=true));
 
 
 
