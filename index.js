@@ -43,11 +43,13 @@ flakes.prototype.scrape = function(rawsamasa) {
         beg = u.first(samasa);
         pos++;
         if (!u.isConsonant(beg) && !u.isVowel(beg)) continue;
+        pos--;
         log('S', pos, samasa);
         firsts = cutTail(samasa, pos);
-        firsts = _.uniq(_.flatten(firsts));
+        // firsts = _.uniq(_.flatten(firsts));
         // log('FFF', firsts)
         flakes.push({pos: pos, flakes: firsts});
+        pos++;
     }
     return flakes;
 }
@@ -63,10 +65,10 @@ function cutTail(samasa, pos) {
     while (cutpos < 8) {
         vows++;
         flake = samasa.slice(0, cutpos);
-        // vows = vowCount(flake);
+        vows = vowCount(flake);
         // if (flake == samasa) continue;
         // log('FLAKE', 'pos', pos, 's', samasa.length, 'fsize', cutpos, 's.size+f.size',  samasa.length+cutpos, 'fl', flake)
-        // log('V', vows);
+        log('V', vows);
         rawtail = samasa.slice(cutpos);
         beg = rawtail[0];
         // log('====== samasa', samasa, 'Flake', flake, 'Tail', rawtail, 'B', beg, '========');
@@ -82,6 +84,7 @@ function cutTail(samasa, pos) {
         // // log('FF', firsts)
         flakes.push(firsts);
     }
+    flakes = _.uniq(_.flatten(flakes));
     return flakes;
 }
 
