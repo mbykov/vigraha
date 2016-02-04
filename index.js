@@ -44,38 +44,43 @@ flakes.prototype.scrape = function(rawsamasa) {
         pos++;
         if (!u.isConsonant(beg) && !u.isVowel(beg)) continue;
         log('S', pos, samasa);
-        flakes.push(cutTail(samasa, pos));
+        firsts = cutTail(samasa, pos);
+        firsts = _.uniq(_.flatten(firsts));
+        // log('FFF', firsts)
+        flakes.push({pos: pos, flakes: firsts});
     }
     return flakes;
 }
 
 
 function cutTail(samasa, pos) {
+    // if (pos !=6) return;
     var flakes = [];
-    var flakesize = 0;
+    var cutpos = 0;
     var vows = 0;
     var flake, rawtail, res;
     var firsts = [];
-    while (vows < 5) {
-        flakesize++;
+    while (cutpos < 8) {
         vows++;
-        flake = samasa.slice(0, flakesize);
-        if (flake == samasa) continue;
-        // log('FLAKE', 'pos', pos, 's', samasa.length, 'fsize', flakesize, 's.size+f.size',  samasa.length+flakesize, 'fl', flake)
-        vows = vowCount(flake);
+        flake = samasa.slice(0, cutpos);
+        // vows = vowCount(flake);
+        // if (flake == samasa) continue;
+        // log('FLAKE', 'pos', pos, 's', samasa.length, 'fsize', cutpos, 's.size+f.size',  samasa.length+cutpos, 'fl', flake)
         // log('V', vows);
-        rawtail = samasa.slice(flakesize);
+        rawtail = samasa.slice(cutpos);
         beg = rawtail[0];
-        // log('====== F', flake, 'T', rawtail, 'B', beg, '========');
-        if (!u.isConsonant(beg)) continue;
+        // log('====== samasa', samasa, 'Flake', flake, 'Tail', rawtail, 'B', beg, '========');
+        cutpos++;
+        if (beg && !u.isConsonant(beg)) continue;
         res = sandhi.del(samasa, rawtail);
-        // // log('R', res)
-        // if (res.length == 0) continue;
+        // log('R', res)
+        if (!res) continue;
+        if (res.length == 0) continue;
         // // res.forEach(function(r) { r.flake = flake});
-        // firsts = res.map(function(r) { return r.firsts});
-        // firsts = _.uniq(_.flatten(firsts));
+        firsts = res.map(function(r) { return r.firsts});
+        firsts = _.uniq(_.flatten(firsts));
         // // log('FF', firsts)
-        // flakes.push({pos: pos, flakes: firsts});
+        flakes.push(firsts);
     }
     return flakes;
 }
