@@ -34,23 +34,34 @@ function flakes() {
 flakes.prototype.scrape = function(rawsamasa) {
     var total = rawsamasa.length;
     var flakes = [];
+    var flake = {};
     // log('syms', totsyms);
     var samasa = rawsamasa;
     var pos = 0;
     var beg;
+    var res;
     while (pos < total) {
         samasa = rawsamasa.slice(pos);
         beg = u.first(samasa);
         pos++;
-        if (!u.isConsonant(beg) && !u.isVowel(beg)) continue;
-        pos--;
+        // if (!u.isConsonant(beg) && !u.isVowel(beg)) continue;
+        if (!u.isConsonant(beg)) continue;
+        // pos--;
         // samasa = firstLiga2vow(samasa); // TODO: FIXME: неясно, м.б. оставить лигу? Все равно складывать лигу потом
         log('S', pos, samasa);
-        firsts = cutTail(samasa);
+        var res = sandhi.del(rawsamasa, samasa);
+        // var tails;
+        res.forEach(function(result) {
+            log('RES', result);
+            result.tails = result.seconds.map(function(second) { return cutTail(second)});
+        });
+        // res.tails = tails;
+        // firsts = cutTail(samasa);
         // firsts = _.uniq(_.flatten(firsts));
         // log('FFF', firsts)
-        flakes.push({pos: pos, flakes: firsts});
-        pos++;
+        // flakes.push({pos: pos, flakes: firsts});
+        flakes.push(res);
+        // pos++;
     }
     return flakes;
 }
@@ -107,16 +118,6 @@ function vowCount(flake) {
     syms.forEach(function(s) {
         if (u.isConsonant(s)) vows+=1;
         else if (s == c.virama) vows-=1;
-    });
-    return vows;
-}
-
-function _vowCount(str) {
-    var syms = str.split('');
-    var vows = (u.c(c.allvowels, syms[0])) ? 1 : 0;
-    syms.forEach(function(s) {
-        if (u.c(c.hal, s)) vows+=1;
-        else if (c.virama == s) vows-=1;
     });
     return vows;
 }
