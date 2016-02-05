@@ -3,7 +3,7 @@
 */
 
 var lat = process.argv.slice(2)[0] || false;
-// var lat2 = process.argv.slice(3)[0] || false;
+var pdch = process.argv.slice(3)[0] || false;
 var util = require('util');
 
 var salita = require('salita-component');
@@ -26,7 +26,8 @@ if (/[a-zA-Z]/.test(lat[0])) {
 
 log('_la_:', lat, '_sa_:', samasa);
 
-var res = flakes.scrape(samasa);
+var res;
+res =  (pdch) ? flakes.vigraha(samasa) : flakes.scrape(samasa);
 
 log('flakes:');
 // log(res);

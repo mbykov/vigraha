@@ -13,29 +13,20 @@ var log = u.log;
 var salita = require('salita-component'); // FIXME: это нужно убрать
 var debug = (process.env.debug == 'true') ? true : false;
 
-module.exports = flakes();
+module.exports = rasper();
 
-function flakes() {
-    if (!(this instanceof flakes)) return new flakes();
+function rasper() {
+    if (!(this instanceof rasper)) return new rasper();
     return this;
 }
 
 /*
-  получает что? stems или tail?
-  // scraper должет возвращать массив {pos: number, flake: 'string', vows: vows, sutra: sutra}
-  пока только {pos:0, flakes: ['a', 'ab', 'abc']}
-
-  ==============
-  вопрос: что откидывать? tail должен начинаться с согласной?
-
-
 */
 
-flakes.prototype.scrape = function(rawsamasa) {
+rasper.prototype.scrape = function(rawsamasa) {
     var total = rawsamasa.length;
     var flakes = [];
-    var flake = {};
-    // log('syms', totsyms);
+    // var flake = {};
     var samasa = rawsamasa;
     var pos = 0;
     var beg;
@@ -44,30 +35,20 @@ flakes.prototype.scrape = function(rawsamasa) {
         samasa = rawsamasa.slice(pos);
         beg = u.first(samasa);
         pos++;
-        // if (!u.isConsonant(beg) && !u.isVowel(beg)) continue;
         if (!u.isConsonant(beg)) continue;
-        // pos--;
-        // samasa = firstLiga2vow(samasa); // TODO: FIXME: неясно, м.б. оставить лигу? Все равно складывать лигу потом
-        log('S', pos, samasa);
+        // if (rawsamasa == samasa) continue;
         var res = sandhi.del(rawsamasa, samasa);
-        // var tails;
         res.forEach(function(result) {
-            log('RES', result);
             result.tails = result.seconds.map(function(second) { return cutTail(second)});
         });
-        // res.tails = tails;
-        // firsts = cutTail(samasa);
-        // firsts = _.uniq(_.flatten(firsts));
-        // log('FFF', firsts)
-        // flakes.push({pos: pos, flakes: firsts});
+        if (res[0].num) continue; // это samasa == second, уродство, выкинуть в sandhi?
         flakes.push(res);
-        // pos++;
     }
     return flakes;
 }
 
-// возвращает массив firsts, pos - удалил
-function cutTail(samasa, pos) {
+// возвращает second, разрезанный на массив firsts
+function cutTail(samasa) {
     // if (pos !=6) return;
     var flakes = [];
     var cutpos = 0;
@@ -77,54 +58,73 @@ function cutTail(samasa, pos) {
     while (cutpos < 8) {
         vows++;
         flake = samasa.slice(0, cutpos);
-        // vows = vowCount(flake);
-        // if (flake == samasa) continue;
-        // log('FLAKE', s', samasa.length, 'fsize', cutpos, 's.size+f.size',  samasa.length+cutpos, 'fl', flake)
-        // log('V', vows);
         rawtail = samasa.slice(cutpos);
         beg = rawtail[0];
         // log('====== samasa', samasa, 'Flake', flake, 'Tail', rawtail, 'B', beg, '========');
         cutpos++;
         if (beg && !u.isConsonant(beg)) continue;
+        // if (samasa, rawtail) continue;
         res = sandhi.del(samasa, rawtail);
-        // log('R', res)
         if (!res) continue;
-        if (res.length == 0) continue;
-        // // res.forEach(function(r) { r.flake = flake});
+        if (res.length == 0) continue; // ???
         firsts = res.map(function(r) { return r.firsts});
         firsts = _.uniq(_.flatten(firsts));
-        // // log('FF', firsts)
         flakes.push(firsts);
     }
     flakes = _.uniq(_.flatten(flakes));
     return flakes;
 }
 
-function firstLiga2vow(str) {
-    var beg = str[0];
-    if (u.c(c.allligas, beg)) {
-        beg = u.vowel(beg);
-        str = u.wofirst(str);
-        str = [beg, str].join('');
-    }
-    return str;
+/*
+  водопад. Выбрать из flakes последовательность, максимально заполняющую samasa
+  кидаю сверху - первая пада длиннейшая
+  дальше неясно
+  ===
+  зато есть простой перебор:
+  первая пада - к ней tails, сколько есть
+  firsrt + tail - равнятется одному из последующий firsts (м.б. нет в словаре, это ok)
+  но - нужный first искать придется по начало...хвост, то есть без гласных в конце first и начале tail
+  к этой частичной паде - опять все tails, сколько есть
+  затем для полученной последовательности вычисляется вес
+  ==
+  обозримо
+*/
+
+
+rasper.prototype.vigraha = function(samasa) {
+    var flakes = this.scrape(samasa)
+    log(1, flakes);
+    return;
 }
 
 
-function vowCount(flake) {
-    var syms = flake.split('');
-    var beg = syms[0];
-    var vows = (u.isVowel(beg)) ? 1 : 0;
-    syms.forEach(function(s) {
-        if (u.isConsonant(s)) vows+=1;
-        else if (s == c.virama) vows-=1;
-    });
-    return vows;
-}
 
 
 
-flakes.prototype.shredder = function(tail) {
-    log('FLAKES SCRAPED', tail);
-    return 'here will be many flakes';
-}
+
+
+
+
+
+
+// function firstLiga2vow(str) {
+//     var beg = str[0];
+//     if (u.c(c.allligas, beg)) {
+//         beg = u.vowel(beg);
+//         str = u.wofirst(str);
+//         str = [beg, str].join('');
+//     }
+//     return str;
+// }
+
+
+// function vowCount(flake) {
+//     var syms = flake.split('');
+//     var beg = syms[0];
+//     var vows = (u.isVowel(beg)) ? 1 : 0;
+//     syms.forEach(function(s) {
+//         if (u.isConsonant(s)) vows+=1;
+//         else if (s == c.virama) vows-=1;
+//     });
+//     return vows;
+// }
