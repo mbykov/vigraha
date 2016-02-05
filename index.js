@@ -44,8 +44,9 @@ flakes.prototype.scrape = function(rawsamasa) {
         pos++;
         if (!u.isConsonant(beg) && !u.isVowel(beg)) continue;
         pos--;
+        // samasa = firstLiga2vow(samasa); // TODO: FIXME: неясно, м.б. оставить лигу? Все равно складывать лигу потом
         log('S', pos, samasa);
-        firsts = cutTail(samasa, pos);
+        firsts = cutTail(samasa);
         // firsts = _.uniq(_.flatten(firsts));
         // log('FFF', firsts)
         flakes.push({pos: pos, flakes: firsts});
@@ -54,7 +55,7 @@ flakes.prototype.scrape = function(rawsamasa) {
     return flakes;
 }
 
-
+// возвращает массив firsts, pos - удалил
 function cutTail(samasa, pos) {
     // if (pos !=6) return;
     var flakes = [];
@@ -65,10 +66,10 @@ function cutTail(samasa, pos) {
     while (cutpos < 8) {
         vows++;
         flake = samasa.slice(0, cutpos);
-        vows = vowCount(flake);
+        // vows = vowCount(flake);
         // if (flake == samasa) continue;
-        // log('FLAKE', 'pos', pos, 's', samasa.length, 'fsize', cutpos, 's.size+f.size',  samasa.length+cutpos, 'fl', flake)
-        log('V', vows);
+        // log('FLAKE', s', samasa.length, 'fsize', cutpos, 's.size+f.size',  samasa.length+cutpos, 'fl', flake)
+        // log('V', vows);
         rawtail = samasa.slice(cutpos);
         beg = rawtail[0];
         // log('====== samasa', samasa, 'Flake', flake, 'Tail', rawtail, 'B', beg, '========');
@@ -86,6 +87,16 @@ function cutTail(samasa, pos) {
     }
     flakes = _.uniq(_.flatten(flakes));
     return flakes;
+}
+
+function firstLiga2vow(str) {
+    var beg = str[0];
+    if (u.c(c.allligas, beg)) {
+        beg = u.vowel(beg);
+        str = u.wofirst(str);
+        str = [beg, str].join('');
+    }
+    return str;
 }
 
 
