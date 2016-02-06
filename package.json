@@ -14,6 +14,7 @@
     "samasa"
   ],
     "dependencies": {
+        "relax-component": "*",
         "underscore": "*"
     },
     "devDependencies": {

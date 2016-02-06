@@ -8,10 +8,18 @@ var s = require('sandhi');
 var c = s.const;
 var u = s.u;
 var sandhi = s.sandhi;
+var inc = u.include;
 var log = u.log;
+var p = u.p;
 
 var salita = require('salita-component'); // FIXME: это нужно убрать
 var debug = (process.env.debug == 'true') ? true : false;
+
+// FIXME: это временно, потом перенести в morph-0.3
+dbpath = 'http://localhost:5984';
+var Relax = require('relax-component');
+var relax = new Relax(dbpath);
+relax.dbname('gita');
 
 module.exports = rasper();
 
@@ -41,13 +49,20 @@ rasper.prototype.scrape = function(rawsamasa) {
         res.forEach(function(result) {
             result.tails = result.seconds.map(function(second) { return cutTail(second)});
         });
+        // if (res.length == 0) continue; // откуда это?
+        if (res.length == 0) {
+            log('======================>>>>>>>> ZERO RES', rawsamasa, 'samasa:', samasa, rawsamasa == samasa);
+            continue;
+        }
         if (res[0].num) continue; // это samasa == second, уродство, выкинуть в sandhi?
         flakes.push(res);
     }
+    flakes = _.flatten(flakes);
     return flakes;
 }
 
 // возвращает second, разрезанный на массив firsts
+// путается flakes тут и в .scrape
 function cutTail(samasa) {
     // if (pos !=6) return;
     var flakes = [];
@@ -71,16 +86,12 @@ function cutTail(samasa) {
         firsts = _.uniq(_.flatten(firsts));
         flakes.push(firsts);
     }
-    flakes = _.uniq(_.flatten(flakes));
+    flakes = _.uniq(_.flatten(flakes)); // FIXME: это не работает
     return flakes;
 }
 
 /*
-  водопад. Выбрать из flakes последовательность, максимально заполняющую samasa
-  кидаю сверху - первая пада длиннейшая
-  дальше неясно
-  ===
-  зато есть простой перебор:
+  простой перебор:
   первая пада - к ней tails, сколько есть
   firsrt + tail - равнятется одному из последующий firsts (м.б. нет в словаре, это ok)
   но - нужный first искать придется по начало...хвост, то есть без гласных в конце first и начале tail
@@ -88,14 +99,57 @@ function cutTail(samasa) {
   затем для полученной последовательности вычисляется вес
   ==
   обозримо
+  2. создать спец. БД для тестов гиты, потому что в couch/sa может не быть нужного stem-а, а заниматься слиянием баз сейчас не с руки, и недолго
 */
 
 
 rasper.prototype.vigraha = function(samasa) {
-    var flakes = this.scrape(samasa)
-    log(1, flakes);
+    var flakes = this.scrape(samasa);
+    var flakefirsts = flakes.map(function(flake) { return flake.firsts});
+    flakefirsts = _.uniq(_.flatten(flakefirsts));
+    log('Fs', flakefirsts);
+    // p(flakes);
+    var pdchs = [];
+    flakes.forEach(function(flake) {
+        // p(flake)
+        var firsts = flake.firsts;
+        firsts = _.uniq(firsts);
+        firsts.forEach(function(first) {
+            var tails = flake.tails;
+            var complete = false;
+            var size = 0;
+            while (!complete) {
+                // тут есть first и tail
+                tails.forEach(function(tail) {
+                    // log(tail)
+                    tail.forEach(function(second) {
+                        var cfirst = first.slice(0, -1);
+                        var csecond = u.wofirstIfVow(second); // FIXME: S-cC case?
+                        // log('CF', cfirst, 'CS', csecond);
+                        // if (u.endsWith(first, csecond)) log('F', first, '-->', u.startsWith(first, cfirst) && u.endsWith(first, csecond))
+                        var newfirst = _.find(flakefirsts, function(f) { return u.startsWith(f, cfirst) && u.endsWith(f, csecond)});
+                        if (!newfirst) log('F', first, 'CF', cfirst, 'CS', csecond, '=NF=', newfirst);
+                        if (!newfirst) complete = true;
+                        var newflake = _.find(flakes, function(f) {return inc(f.firsts, newfirst)});
+                        if (!newflake) log('===> tails:', newfirst);
+                        // first = newfirst;
+                        // tails = newflake.tails;
+
+                        var res = {first: first, second: second}
+                        pdchs.push(res);
+                        // здесь ищем first, похожий на first + second, к нему получаем tails
+                    });
+                });
+                size++
+                if (size > 0) complete = true;
+            }
+        });
+    });
+    // p(pdchs)
+    log('size', samasa.length, '-->', pdchs.length)
     return;
 }
+
 
 
 
