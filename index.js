@@ -42,12 +42,12 @@ rasper.prototype.scrape = function(rawsamasa) {
     while (pos < total) {
         samasa = rawsamasa.slice(pos);
         beg = u.first(samasa);
-        log('R', rawsamasa, 'S', samasa, 'B', beg);
+        // log('R', rawsamasa, 'S', samasa, 'B', beg);
         pos++;
         if (beg && !u.isConsonant(beg)) continue;
         // if (rawsamasa == samasa) continue;
         var res = sandhi.del(rawsamasa, samasa);
-        log('R', res)
+        // log('R', res)
         res.forEach(function(result) {
             result.tails = result.seconds.map(function(second) { return cutTail(second)});
         });
@@ -162,9 +162,12 @@ rasper.prototype.vigraha = function(samasa) {
                         // этот метод хорош, но находятся newfirst по началу и концу, но без середины
                         // либо size - неясно, какой - зависит от sutra
                         // либо sandhi.add?
-                        log('F', first, 'S', second);
-                        var add = sandhi.add(first, second);
-                        var newfirst = _.find(flakefirsts, function(f) { return f == add});
+                        // log('F', first, 'S', second, pdch);
+                        // TODO: нужно сложить ВСЕ pdch, а для этого иметь sandhi.add
+                        // var add = sandhi.add(first, second);
+                        // var newfirst = _.find(flakefirsts, function(f) { return f == add});
+                        // тогда третий метод - все в pdch должны match f - нет, слишком легкое условие, все будут, а длинны нет
+
 
                         // if (first == 'योग') log('NEW FIRST', newfirst == samasa);
                         if (!newfirst) return;
