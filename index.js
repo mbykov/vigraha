@@ -143,31 +143,41 @@ rasper.prototype.vigraha = function(samasa) {
     flakes.forEach(function(flake, idx) {
         var firsts = flake.firsts;
         firsts = _.uniq(firsts);
-        firsts.forEach(function(first, idy) {
-            // log('FIRST', first);
-            log('IDX', idx, idy)
+        firsts.forEach(function(afirst, idy) {
+            // log('FIRST', afirst);
+            // log('IDX', idx, idy)
             var tails = flake.tails;
             // var complete = false;
-            var pdch = [idx, idy, first];
+            var pdch = [idx, idy, afirst];
             function getPada(first, tails) {
                 // if (!tails) log('NO TAILS', first);
                 tails.forEach(function(tail, idz) {
                     // log(tail)
                     tail.forEach(function(second, idw) {
                         var cfirst = first.slice(0, -1);
-                        var csecond = u.wofirstIfVow(second); // FIXME: S-cC case?
-                        // log('CF', cfirst, 'CS', csecond);
-                        // log('CF', cfirst, 'CS', csecond);
+                        var csecond = u.wofirstIfVow(second);
+                        // if (first == 'योग') log('CF', cfirst, 'CS', csecond, 'SEC', second);
+                        // var size = cfirst.length + csecond.length +2;
                         var newfirst = _.find(flakefirsts, function(f) { return u.startsWith(f, cfirst) && u.endsWith(f, csecond)});
-                        // log('NWE FIRST', newfirst);
+                        // этот метод хорош, но находятся newfirst по началу и концу, но без середины
+                        // либо size - неясно, какой - зависит от sutra
+                        // либо sandhi.add?
+                        log('F', first, 'S', second);
+                        var add = sandhi.add(first, second);
+                        var newfirst = _.find(flakefirsts, function(f) { return f == add});
+
+                        // if (first == 'योग') log('NEW FIRST', newfirst == samasa);
                         if (!newfirst) return;
                         pdch.push(second);
+                        // if (newfirst == samasa) pdch.push(22222);
+                        // if (newfirst == samasa && first == 'योग') log('PUSH SAMASA', second, 'F', first)
+                        // if (newfirst == samasa && first == 'योग') log('PDCH', pdch)
                         // if (newfirst) log('F', first, 'CF', cfirst, 'CS', csecond, '=NF=', newfirst);
                         if (!newfirst) return;
                         var newflake = _.find(flakes, function(f) {return inc(f.firsts, newfirst)});
                         var newtails = newflake.tails;
                         if (!newtails) log('NO TAILS', newflake);
-                        getPada(newfirst, newtails);
+                        getPada(first, newtails);
                     });
                     pdch.push(1111);
                     // if (pdch[2] == 'योग') log('=================888', pdch)
@@ -180,7 +190,7 @@ rasper.prototype.vigraha = function(samasa) {
                 // pdch = ['B', '-', first];
                 // return pdch;
             }
-            getPada(first, tails);
+            getPada(afirst, tails);
             // pdchs.push(res);
         });
     });
