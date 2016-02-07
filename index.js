@@ -144,21 +144,48 @@ rasper.prototype.vigraha = function(samasa) {
         var firsts = flake.firsts;
         firsts = _.uniq(firsts);
         firsts.forEach(function(first, idy) {
-            log('FIRST', first);
+            // log('FIRST', first);
+            log('IDX', idx, idy)
             var tails = flake.tails;
-            var complete = false;
-            var pdch = [first];
-            getPada(pdch, flakes, flakefirsts, first, tails);
-            pdchs.push(pdch);
+            // var complete = false;
+            var pdch = [idx, idy, first];
+            function getPada(flakes, flakefirsts, first, tails) {
+                // if (!tails) log('NO TAILS', first);
+                tails.forEach(function(tail, idz) {
+                    // log(tail)
+                    tail.forEach(function(second, idw) {
+                        var cfirst = first.slice(0, -1);
+                        var csecond = u.wofirstIfVow(second); // FIXME: S-cC case?
+                        // log('CF', cfirst, 'CS', csecond);
+                        var newfirst = _.find(flakefirsts, function(f) { return u.startsWith(f, cfirst) && u.endsWith(f, csecond)});
+                        // log('NWE FIRST', newfirst);
+                        pdch.push(second);
+                        // if (newfirst) log('F', first, 'CF', cfirst, 'CS', csecond, '=NF=', newfirst);
+                        if (!newfirst) return;
+                        var newflake = _.find(flakes, function(f) {return inc(f.firsts, newfirst)});
+                        var newtails = newflake.tails;
+                        if (!newtails) log('NO TAILS', newflake);
+                        getPada(flakes, flakefirsts, newfirst, newtails);
+                    });
+                    pdch.push(1111);
+                    if (pdch[0] == 8) log('=================888', tail)
+                    pdchs.push(pdch);
+                    pdch = ['A', first];
+                    // return pdch;
+                });
+                // return pdch;
+            }
+            getPada(flakes, flakefirsts, first, tails);
+            // pdchs.push(res);
         });
     });
-    p(pdchs)
+    p(pdchs.slice(-26))
     log('size', samasa.length, '-->', pdchs.length)
     return;
 }
 
-function getPada(pdch, flakes, flakefirsts, first, tails) {
-    if (!tails) log('NO TAILS', first);
+function getPada_(pdchs, pdch, flakes, flakefirsts, first, tails) {
+    // if (!tails) log('NO TAILS', first);
     tails.forEach(function(tail, idz) {
         // log(tail)
         tail.forEach(function(second, idw) {
@@ -166,17 +193,22 @@ function getPada(pdch, flakes, flakefirsts, first, tails) {
             var csecond = u.wofirstIfVow(second); // FIXME: S-cC case?
             // log('CF', cfirst, 'CS', csecond);
             var newfirst = _.find(flakefirsts, function(f) { return u.startsWith(f, cfirst) && u.endsWith(f, csecond)});
-            log('NWE FIRST', newfirst);
+            // log('NWE FIRST', newfirst);
             pdch.push(second);
             // if (newfirst) log('F', first, 'CF', cfirst, 'CS', csecond, '=NF=', newfirst);
-            if (!newfirst) return; // complete = true;
+            if (!newfirst) return;
             var newflake = _.find(flakes, function(f) {return inc(f.firsts, newfirst)});
             var newtails = newflake.tails;
             if (!newtails) log('NO TAILS', newflake);
-            getPada(pdch, flakes, flakefirsts, newfirst, newtails);
+            getPada(pdchs, pdch, flakes, flakefirsts, newfirst, newtails);
         });
+        pdch.push(1111);
+        if (pdch[0] == 8) log('=================888', tail)
+        // pdchs.push(pdch);
+        // pdch = ['A'];
+        // return pdch;
     });
-    return pdch;
+    // return pdch;
 }
 
 
