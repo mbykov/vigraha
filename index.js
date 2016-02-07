@@ -32,7 +32,7 @@ function rasper() {
 */
 
 rasper.prototype.scrape = function(rawsamasa) {
-    var total = rawsamasa.length;
+    var total = rawsamasa.length+1;
     var flakes = [];
     // var flake = {};
     var samasa = rawsamasa;
@@ -41,13 +41,13 @@ rasper.prototype.scrape = function(rawsamasa) {
     var res;
     while (pos < total) {
         samasa = rawsamasa.slice(pos);
-        // log('R', rawsamasa, 'S', samasa);
         beg = u.first(samasa);
+        log('R', rawsamasa, 'S', samasa, 'B', beg);
         pos++;
-        if (!u.isConsonant(beg)) continue;
+        if (beg && !u.isConsonant(beg)) continue;
         // if (rawsamasa == samasa) continue;
         var res = sandhi.del(rawsamasa, samasa);
-        // log('R', res)
+        log('R', res)
         res.forEach(function(result) {
             result.tails = result.seconds.map(function(second) { return cutTail(second)});
         });
@@ -56,7 +56,7 @@ rasper.prototype.scrape = function(rawsamasa) {
             log('======================>>>>>>>> ZERO RES', rawsamasa, 'samasa:', samasa, rawsamasa == samasa);
             continue;
         }
-        if (res[0].num) continue; // это samasa == second, уродство, выкинуть в sandhi?
+        // if (res[0].num) continue; // это samasa == second, уродство, выкинуть в sandhi?
         flakes.push(res);
     }
     flakes = _.flatten(flakes);
@@ -138,7 +138,7 @@ rasper.prototype.vigraha = function(samasa) {
     var flakes = this.scrape(samasa);
     var flakefirsts = flakes.map(function(flake) { return flake.firsts});
     flakefirsts = _.uniq(_.flatten(flakefirsts));
-    // log('Fs', flakefirsts);
+    log('Fs', flakefirsts);
     var pdchs = [];
     flakes.forEach(function(flake, idx) {
         var firsts = flake.firsts;
@@ -149,7 +149,7 @@ rasper.prototype.vigraha = function(samasa) {
             var tails = flake.tails;
             // var complete = false;
             var pdch = [idx, idy, first];
-            function getPada(flakes, flakefirsts, first, tails) {
+            function getPada(first, tails) {
                 // if (!tails) log('NO TAILS', first);
                 tails.forEach(function(tail, idz) {
                     // log(tail)
@@ -157,29 +157,37 @@ rasper.prototype.vigraha = function(samasa) {
                         var cfirst = first.slice(0, -1);
                         var csecond = u.wofirstIfVow(second); // FIXME: S-cC case?
                         // log('CF', cfirst, 'CS', csecond);
+                        // log('CF', cfirst, 'CS', csecond);
                         var newfirst = _.find(flakefirsts, function(f) { return u.startsWith(f, cfirst) && u.endsWith(f, csecond)});
                         // log('NWE FIRST', newfirst);
+                        if (!newfirst) return;
                         pdch.push(second);
                         // if (newfirst) log('F', first, 'CF', cfirst, 'CS', csecond, '=NF=', newfirst);
                         if (!newfirst) return;
                         var newflake = _.find(flakes, function(f) {return inc(f.firsts, newfirst)});
                         var newtails = newflake.tails;
                         if (!newtails) log('NO TAILS', newflake);
-                        getPada(flakes, flakefirsts, newfirst, newtails);
+                        getPada(newfirst, newtails);
                     });
                     pdch.push(1111);
-                    if (pdch[0] == 8) log('=================888', tail)
+                    // if (pdch[2] == 'योग') log('=================888', pdch)
                     pdchs.push(pdch);
-                    pdch = ['A', first];
+                    pdch = ['A', '-', first];
                     // return pdch;
                 });
+                // pdch.push(2222);
+                // pdchs.push(pdch);
+                // pdch = ['B', '-', first];
                 // return pdch;
             }
-            getPada(flakes, flakefirsts, first, tails);
+            getPada(first, tails);
             // pdchs.push(res);
         });
     });
-    p(pdchs.slice(-26))
+    // p(pdchs.slice(-26));
+    pdchs.forEach(function(pdch) {
+        if (pdch[2] == 'योग') log('===========>>>', pdch)
+    });
     log('size', samasa.length, '-->', pdchs.length)
     return;
 }
