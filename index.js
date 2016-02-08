@@ -134,6 +134,16 @@ function getPada(flakes, flakefirsts, idx, idy, idz, idw) {
     return step;
 }
 
+// этот метод хорош, но находятся newfirst по началу и концу, но без середины
+// либо size - неясно, какой - зависит от sutra
+// либо sandhi.add?
+// TODO: нужно сложить ВСЕ pdch, а для этого иметь sandhi.add
+// var add = sandhi.add(first, second);
+// var newfirst = _.find(flakefirsts, function(f) { return f == add});
+// тогда третий метод - все в pdch должны match f - нет, слишком легкое условие, все будут, а длины нет
+// четвертый - передавать pos вместе с first, начиная с которого second учитываются
+// пятый - учесть depth
+
 rasper.prototype.vigraha = function(samasa) {
     var flakes = this.scrape(samasa);
     var flakefirsts = flakes.map(function(flake) { return flake.firsts});
@@ -144,57 +154,51 @@ rasper.prototype.vigraha = function(samasa) {
         var firsts = flake.firsts;
         firsts = _.uniq(firsts);
         firsts.forEach(function(afirst, idy) {
-            // log('FIRST', afirst);
             // log('IDX', idx, idy)
             var tails = flake.tails;
-            // var complete = false;
             var pdch = [idx, idy, afirst];
-            function getPada(first, tails) {
-                // if (!tails) log('NO TAILS', first);
+
+            function getPada(first, tails, depth) {
+                var tailused = false;
+                var idzused = 0;
+                depth++;
+                var newfirst;
                 tails.forEach(function(tail, idz) {
-                    // log(tail)
+                    if (tailused) return;
                     tail.forEach(function(second, idw) {
                         var cfirst = first.slice(0, -1);
                         var csecond = u.wofirstIfVow(second);
                         // if (first == 'योग') log('CF', cfirst, 'CS', csecond, 'SEC', second);
                         // var size = cfirst.length + csecond.length +2;
-                        var newfirst = _.find(flakefirsts, function(f) { return u.startsWith(f, cfirst) && u.endsWith(f, csecond)});
-                        // этот метод хорош, но находятся newfirst по началу и концу, но без середины
-                        // либо size - неясно, какой - зависит от sutra
-                        // либо sandhi.add?
-                        // log('F', first, 'S', second, pdch);
-                        // TODO: нужно сложить ВСЕ pdch, а для этого иметь sandhi.add
-                        // var add = sandhi.add(first, second);
-                        // var newfirst = _.find(flakefirsts, function(f) { return f == add});
-                        // тогда третий метод - все в pdch должны match f - нет, слишком легкое условие, все будут, а длинны нет
+                        newfirst = _.find(flakefirsts, function(f) { return u.startsWith(f, cfirst) && u.endsWith(f, csecond)});
 
-
-                        // if (first == 'योग') log('NEW FIRST', newfirst == samasa);
                         if (!newfirst) return;
+                        if (newfirst.length < first.length) return;
+                        // if (first == 'योग') log('NEW FIRST', newfirst == samasa);
+                        // pdch.push('f1:', first, 'nf:', newfirst); //
                         pdch.push(second);
-                        // if (newfirst == samasa) pdch.push(22222);
-                        // if (newfirst == samasa && first == 'योग') log('PUSH SAMASA', second, 'F', first)
-                        // if (newfirst == samasa && first == 'योग') log('PDCH', pdch)
-                        // if (newfirst) log('F', first, 'CF', cfirst, 'CS', csecond, '=NF=', newfirst);
+                        // if (depth+1 != pdch.length-2) return;
+                        if (first == 'योग') log('F', first, 'S', second, 'pdch', pdch, pdch.length-2, 'idw', idw, 'd', depth);
+                        // pdch.push('-');
+                        // if (idzused != idz) tailused = true;
+                        // idzused = idz;
+                        //
                         if (!newfirst) return;
                         var newflake = _.find(flakes, function(f) {return inc(f.firsts, newfirst)});
                         var newtails = newflake.tails;
                         if (!newtails) log('NO TAILS', newflake);
-                        getPada(first, newtails);
+                        // pdchs.push(pdch);
+                        // pdch = ['A', '-', afirst];
+                        getPada(newfirst, newtails, depth);
                     });
-                    pdch.push(1111);
+                    // pdch.push(1111);
                     // if (pdch[2] == 'योग') log('=================888', pdch)
                     pdchs.push(pdch);
-                    pdch = ['A', '-', first];
+                    pdch = ['A', '-', afirst]; // afirst - потому что я начинаю снова внутри той же клетки таблицы
                     // return pdch;
                 });
-                // pdch.push(2222);
-                // pdchs.push(pdch);
-                // pdch = ['B', '-', first];
-                // return pdch;
-            }
-            getPada(afirst, tails);
-            // pdchs.push(res);
+            } // end getPada
+            getPada(afirst, tails, 0);
         });
     });
     // p(pdchs.slice(-26));
