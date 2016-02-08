@@ -201,7 +201,7 @@ rasper.prototype.vigraha = function(samasa) {
 
                         // pdch.push(1111);
                         // if (pdch[2] == 'योग') log('=================888', pdch)
-                        pdchs.push(pdch);
+                        if (pdch.length > 3) pdchs.push(pdch);
                         pdch = ['B', '-', first];
                     } // end getPada
 
@@ -217,12 +217,20 @@ rasper.prototype.vigraha = function(samasa) {
         });
     });
     // p(pdchs.slice(-26));
+    var uhash = {}
+
     pdchs.forEach(function(pdch) {
+        var key = pdch.join('');
+        if (!uhash[key]) uhash[key] = pdch;
+    });
+    var uniq = _.values(uhash);
+    // p(uniq);
+    uniq.forEach(function(pdch) {
         // log('===========>>>', pdch)
         if (pdch[2] == 'योग') log('===========>>>', pdch)
         // योगान् // योग // योगानुशास्
     });
-    log('size', samasa.length, '-->', pdchs.length)
+    log('size', samasa.length, '-->', uniq.length)
     return;
 }
 
