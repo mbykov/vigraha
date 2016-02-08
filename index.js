@@ -181,7 +181,9 @@ rasper.prototype.vigraha = function(samasa) {
                         // if (newfirst.length < first.length) return;
                         // pdch.push(second);
                         // if (second == 'शास्') pdch.push('====', first)
+
                         if (depth+1 != pdch.length-2) return;
+
                         // if (first == 'योग') log('F', first, 'S', second, 'pdch', pdch, pdch.length-2, 'd', depth);
                         //
                         // if (!newfirst) return;
@@ -216,8 +218,8 @@ rasper.prototype.vigraha = function(samasa) {
     // p(pdchs.slice(-26));
     pdchs.forEach(function(pdch) {
         // log('===========>>>', pdch)
-        if (pdch[2] == 'योग') log('===========>>>', pdch)
-        // योगान् // योग
+        if (pdch[2] == 'योगानु') log('===========>>>', pdch)
+        // योगान् // योग // योगानुशास्
     });
     log('size', samasa.length, '-->', pdchs.length)
     return;
