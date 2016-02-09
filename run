@@ -11,6 +11,7 @@ var flakes = require('./index');
 var s = require('sandhi');
 var u = s.u;
 var log = u.log;
+var p = u.p;
 // var sandhi = s.sandhi;
 
 if (!lat) return log('samasa ?');
@@ -31,7 +32,9 @@ res =  (pdch) ? flakes.vigraha(samasa) : flakes.scrape(samasa);
 
 log('flakes:');
 // log(res);
-console.log(util.inspect(res, showHidden=false, depth=null, colorize=true));
+// console.log(util.inspect(res, showHidden=false, depth=null, colorize=true));
+p(res);
+log('size', samasa.length, '-->', res.length)
 
 
 

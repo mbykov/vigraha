@@ -108,88 +108,6 @@ function cutTail(samasa) {
 */
 
 
-rasper.prototype.vigraha_ = function(samasa) {
-    var flakes = this.scrape(samasa);
-    var pdchs = [];
-    var flakefirsts = flakes.map(function(flake) { return flake.firsts});
-    flakefirsts = _.uniq(_.flatten(flakefirsts));
-    // log('Fs', flakefirsts);
-    var pada = getPada(flakes, flakefirsts, 0, 0, 0, 0);
-    pdchs.push(pada);
-    log('size', samasa.length, '-->', pdchs.length)
-    return 'ku'
-}
-
-
-// этот метод хорош, но находятся newfirst по началу и концу, но без середины
-// либо size - неясно, какой - зависит от sutra
-// либо sandhi.add?
-// TODO: нужно сложить ВСЕ pdch, а для этого иметь sandhi.add
-// var add = sandhi.add(first, second);
-// var newfirst = _.find(flakefirsts, function(f) { return f == add});
-// тогда третий метод - все в pdch должны match f - нет, слишком легкое условие, все будут, а длины нет
-// четвертый - передавать pos вместе с first, начиная с которого second учитываются
-// пятый - учесть depth
-
-rasper.prototype.vigraha_ = function(samasa) {
-    var flakes = this.scrape(samasa);
-    var flakefirsts = flakes.map(function(flake) { return flake.firsts});
-    flakefirsts = _.uniq(_.flatten(flakefirsts));
-    log('Fs', flakefirsts);
-    var pdchs = [];
-    flakes.forEach(function(flake, idx) {
-        var firsts = flake.firsts;
-        firsts = _.uniq(firsts);
-        firsts.forEach(function(afirst, idy) {
-            // log('IDX', idx, idy)
-            var tails = flake.tails;
-            tails.forEach(function(atail, idz) {
-                atail.forEach(function(second, idw) {
-                    var pdch = getPada(flakes, idx, idy, idz, idw);
-                    pdchs.push(pdch);
-                }); // tail
-            }); // tails
-        });
-    });
-    // p(pdchs.slice(-26));
-    log('size', samasa.length, '-->', pdchs.length)
-    return;
-}
-
-function getPada(flakes, idx, idy, idz, idw) {
-    var step = [idx, idy, idz, idw].join('-');
-    log('step', step);
-    var flake = flakes[idx];
-    var first = flake.firsts[idy];
-    var tail = flake.tails[idz];
-    var second = tail[idw];
-    var pdch = [idx, idy, idz, idw, first, second];
-
-    var idx_, idy_, idz_, idw_;
-    var newtails;
-    var csecond = u.wofirstIfVow(second);
-    flakes.forEach(function(flake, idx) {
-        var firsts = flake.firsts;
-        firsts = _.uniq(firsts);
-        firsts.forEach(function(afirst, idy) {
-            if (u.endsWith(afirst, csecond)) {
-                idx_ = idx;
-                idy_ = idy;
-                newtails = flake.tails;
-            }
-        });
-    });
-
-    var pdch_;
-    newtails.forEach(function(newtail, idz) {
-        newtail.forEach(function(asecond, idw) {
-            pdch_ = getPada(flakes, idx_, idy_, idz, idw);
-            // pdch =
-        });
-    });
-    return pdch_;
-}
-
 rasper.prototype.vigraha = function(samasa) {
     var flakes = this.scrape(samasa);
     var flakefirsts = flakes.map(function(flake) { return flake.firsts});
@@ -263,12 +181,12 @@ rasper.prototype.vigraha = function(samasa) {
     var uniq = _.values(uhash);
     // p(uniq);
     pdchs.forEach(function(pdch) {
-        log('===========>>>', pdch)
+        // log('===========>>>', pdch)
         // if (pdch[0] == 'योग') log('===========>>>', JSON.stringify(pdch));
         // योगान् // योग // योगानुशास्
     });
-    log('size', samasa.length, '-->', uniq.length)
-    return;
+    // log('size', samasa.length, '-->', uniq.length)
+    return pdchs;
 }
 
 function getPada_(pdchs, pdch, flakes, flakefirsts, first, tails) {
