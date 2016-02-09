@@ -204,12 +204,14 @@ rasper.prototype.vigraha = function(samasa) {
             var tails = flake.tails;
             tails.forEach(function(atail, idz) {
                 atail.forEach(function(second, idw) {
-                    var pdch = [idx, idy, idz, afirst];
+                    var pdch = [ afirst];
 
+                    // 1, 0, 0, 'या', 'सन', 'शास्', 'शास', 'न'
                     function getPada(first, second, depth) {
+                        if (!pdch) return;
                         depth++;
                         pdch.push(second);
-
+                        // if (second == 'सन') pdch.push('====>>>', 'f', first);
                         var newfirst;
                         var newtails;
                         var csecond = u.wofirstIfVow(second);
@@ -225,13 +227,15 @@ rasper.prototype.vigraha = function(samasa) {
                         });
 
                         // if (first == 'योग') log('F', first, 'S', second, 'pdch', pdch, pdch.length, 'd', depth);
-                        if (pdch.length - depth != 4) return;
+                        // if (pdch.length - depth != 1) return;
                         // अनुशासन
 
                         if (newtails.length == 0) {
                             // if (pdch.length > 2) pdchs.push(pdch);
+                            // pdch.push(idx, idy, idz);
                             pdchs.push(pdch);
-                            pdch = [idx, idy, idz, afirst];
+                            // pdch = [ afirst];
+                            pdch = false;
                             // return;
                         }
                         if (!newtails) log('NO TAILS', newflake);
@@ -260,7 +264,7 @@ rasper.prototype.vigraha = function(samasa) {
     // p(uniq);
     pdchs.forEach(function(pdch) {
         log('===========>>>', pdch)
-        // if (pdch[3] == 'योग') log('===========>>>', pdch.toString())
+        // if (pdch[0] == 'योग') log('===========>>>', JSON.stringify(pdch));
         // योगान् // योग // योगानुशास्
     });
     log('size', samasa.length, '-->', uniq.length)
