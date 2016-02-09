@@ -66,14 +66,7 @@ test:
 		2> /dev/null
 
 gita:
-	@NODE_ENV=test ./node_modules/.bin/mocha \
-		--require should \
-		--reporter $(REPORTER) \
-		--slow 500 \
-		--grep $(g) \
-		--timeout 3000 \
-		$(GITA) \
-		2> /dev/null
+	@node test/gita.js
 
 
 
