@@ -131,7 +131,7 @@ rasper.prototype.vigraha_ = function(samasa) {
 // четвертый - передавать pos вместе с first, начиная с которого second учитываются
 // пятый - учесть depth
 
-rasper.prototype.vigraha = function(samasa) {
+rasper.prototype.vigraha_ = function(samasa) {
     var flakes = this.scrape(samasa);
     var flakefirsts = flakes.map(function(flake) { return flake.firsts});
     flakefirsts = _.uniq(_.flatten(flakefirsts));
@@ -190,7 +190,7 @@ function getPada(flakes, idx, idy, idz, idw) {
     return pdch_;
 }
 
-rasper.prototype.vigraha_ = function(samasa) {
+rasper.prototype.vigraha = function(samasa) {
     var flakes = this.scrape(samasa);
     var flakefirsts = flakes.map(function(flake) { return flake.firsts});
     flakefirsts = _.uniq(_.flatten(flakefirsts));
@@ -208,60 +208,43 @@ rasper.prototype.vigraha_ = function(samasa) {
 
                     function getPada(first, second, depth) {
                         depth++;
-                        var fin = u.last(first);
-                        var cfirst = first;
-                        if (u.isVowel(fin)) cfirst = first.slice(0, -1);
-                        if (fin == c.virama) cfirst = first.slice(0, -1);
-                        var csecond = u.wofirstIfVow(second);
-                        // var newfirst = _.find(flakefirsts, function(f) { return u.startsWith(f, cfirst) && u.endsWith(f, csecond)});
-                        // c-first не нужен, они все одинаковы
-                        var newfirst = _.find(flakefirsts, function(f) { return u.endsWith(f, csecond)});
-
-                        // if (newfirst == 'योगानु') pdch.push('=========>>>>>>>>>')
-                        if (!newfirst) {
-                            log('f', first, 's', second, 'cf', cfirst, 'cs', csecond)
-                            throw new Error('NO NEW FIRST')
-                            // pdchs.push(pdch);
-                            // pdch = ['A', '-', afirst];
-                            return;
-                        }
                         pdch.push(second);
-                        // if (second == 'उश') pdch.push('====');
 
-                        // if (depth+1 != pdch.length-2) return;
+                        var newfirst;
+                        var newtails;
+                        var csecond = u.wofirstIfVow(second);
+                        flakes.forEach(function(flake, idx) {
+                            var firsts = flake.firsts;
+                            firsts = _.uniq(firsts);
+                            firsts.forEach(function(first, idy) {
+                                if (u.endsWith(first, csecond)) {
+                                    newfirst = first;
+                                    newtails = flake.tails;
+                                }
+                            });
+                        });
 
-                        // if (first == 'योग') log('F', first, 'S', second, 'pdch', pdch, pdch.length-2, 'd', depth);
-                        var newflake = _.find(flakes, function(f) {return inc(f.firsts, newfirst)});
-                        var newtails = newflake.tails;
+                        // if (first == 'योग') log('F', first, 'S', second, 'pdch', pdch, pdch.length, 'd', depth);
+                        if (pdch.length - depth != 4) return;
+                        // अनुशासन
+
                         if (newtails.length == 0) {
-                            // log('nf', newfirst, 's', second, 'p', pdch)
-                            // throw new Error('ZERO SIZE')
-                            return;
+                            // if (pdch.length > 2) pdchs.push(pdch);
+                            pdchs.push(pdch);
+                            pdch = [idx, idy, idz, afirst];
+                            // return;
                         }
                         if (!newtails) log('NO TAILS', newflake);
                         newtails.forEach(function(newtail, idz) {
                             newtail.forEach(function(asecond, idw) {
-                                // pdch.push(2222, idw);
-                                // if (asecond == 'उश') pdch.push('====');
-                                // pdch.push(asecond);
                                 getPada(newfirst, asecond, depth);
                             });
                         });
-
                         // pdch.push(1111);
-                        // if (pdch[2] == 'योग') log('=================888', pdch)
-                        if (pdch.length > 3) pdchs.push(pdch);
-                        // pdch = ['B', '-', first];
-                        // pdch = [idx, idy, first];
                     } // end getPada
 
                     getPada(afirst, second, 0);
-                    // pdchs.push(pdch);
-                    // pdch = ['B', '-', afirst];
                 }); // tail
-
-                // pdch.push(1111);
-                // pdch = [idx, idy, afirst]; // afirst - потому что я начинаю снова внутри той же клетки таблицы
             }); // tails
 
         });
@@ -275,9 +258,9 @@ rasper.prototype.vigraha_ = function(samasa) {
     });
     var uniq = _.values(uhash);
     // p(uniq);
-    uniq.forEach(function(pdch) {
-        // log('===========>>>', pdch)
-        if (pdch[3] == 'योग') log('===========>>>', pdch.toString())
+    pdchs.forEach(function(pdch) {
+        log('===========>>>', pdch)
+        // if (pdch[3] == 'योग') log('===========>>>', pdch.toString())
         // योगान् // योग // योगानुशास्
     });
     log('size', samasa.length, '-->', uniq.length)
