@@ -108,11 +108,11 @@ function cutTail(samasa) {
 */
 
 
-rasper.prototype.vigraha = function(samasa) {
+rasper.prototype.cut = function(samasa) {
     var flakes = this.scrape(samasa);
-    var flakefirsts = flakes.map(function(flake) { return flake.firsts});
-    flakefirsts = _.uniq(_.flatten(flakefirsts));
-    log('Fs', flakefirsts);
+    // var flakefirsts = flakes.map(function(flake) { return flake.firsts});
+    // flakefirsts = _.uniq(_.flatten(flakefirsts));
+    // log('Fs', flakefirsts);
     var pdchs = [];
     flakes.forEach(function(flake, idx) {
         var firsts = flake.firsts;
