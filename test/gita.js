@@ -39,12 +39,14 @@ function runGitaTests() {
                 // log(idy)
                 if (idy !=6) return;
                 var samasa = line.form;
+                var next = doc.lines[idy+1];
+                var clean = outer(samasa, next);
                 var dicts = line.dicts.map(function(dict) { return dict.form });
                 var cleans = dicts.map(function(dict, idz) {
                     var next = dicts[idz+1];
-                    return correct(dict, next);
+                    return correct(dict, next); // simple outer, only M
                 })
-                var flakes = rasper.cut(samasa);
+                var flakes = rasper.cut(clean);
                 // p(flakes);
                 // log(samasa, dicts, cleans);
                 // return;
@@ -56,8 +58,9 @@ function runGitaTests() {
                     if (key == test) exists = true;
                 });
                 if (!exists) {
-                    log(1, samasa, dicts, cleans);
-                    throw new Error();
+                    p(flakes);
+                    log(samasa, dicts, cleans);
+                    throw new Error('NO EXISTING KEY');
                 }
             });
         });
