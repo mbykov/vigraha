@@ -144,9 +144,17 @@ rasper.prototype.cut = function(samasa) {
 
                         // HERE: ======================
                         // короче, нужно тупо применить sandhi.add
+                        // и newfirst - обязан - всегда - найтись
+                        // делаю sandhi.add и возвращаюсь сюда
 
                         var newfirst;
                         var newtails;
+                        var added = sandhi.add(first, second);
+                        if (added.length > 1) {
+                            log('added.length > 1', afirst, asecond, first, second, 'add', added);
+                            throw new Error('added.length > 1');
+                        }
+                        added = added[0];
                         // var cfirst = (first.length > 3) ? first.slice(0, -2) : first;
                         var fin = u.last(first);
                         var cfirst = (u.isVowel(fin)) ? u.wolast(first) : first;
@@ -160,8 +168,8 @@ rasper.prototype.cut = function(samasa) {
                             var firsts = flake.firsts;
                             firsts = _.uniq(firsts);
                             firsts.forEach(function(f, idy_) {
-                                if (u.startsWith(f, cfirst) && u.endsWith(f, csecond)) {
-                                // if (u.endsWith(f, csecond)) {
+                                // if (u.startsWith(f, cfirst) && u.endsWith(f, csecond)) {
+                                if (f == added) {
                                     newfirst = f;
                                     newtails = flake.tails;
                                     newidx = idx_;
@@ -173,7 +181,8 @@ rasper.prototype.cut = function(samasa) {
                         });
                         // log('NNNFFF', newfirst)
                         if (!newfirst) {
-                            log('afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'cfirst', cfirst, 'csecond', csecond);
+                            // log('afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'cfirst', cfirst, 'csecond', csecond);
+                            log('afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'added', added);
                             throw new Error('!!!!=============== NO NEW FIRST');
                         }
 
