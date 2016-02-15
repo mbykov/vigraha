@@ -43,12 +43,12 @@ rasper.prototype.scrape = function(rawsamasa) {
     while (pos < total) {
         samasa = rawsamasa.slice(pos);
         beg = u.first(samasa);
-        // log('R', rawsamasa, 'S', samasa, 'B', beg);
         pos++;
         if (beg && !u.isConsonant(beg)) continue;
         // if (rawsamasa == samasa) continue;
+        // log('pos', pos, 'R', rawsamasa, 'S', samasa, 'B', beg);
         var res = sandhi.del(rawsamasa, samasa);
-        // log('R', res)
+        // log('R', res);
         if (res.length == 0) {
             log('======================>>>>>>>> ZERO RES', rawsamasa, 'samasa:', samasa, rawsamasa == samasa);
             continue;
@@ -139,19 +139,17 @@ rasper.prototype.cut = function(samasa) {
                         if (!pdch) return;
                         depth++;
                         pdch.push(second);
-                        // if (second == 'सन') pdch.push('====>>>', 'f', first);
-
-
                         // HERE: ======================
                         // короче, нужно тупо применить sandhi.add
                         // и newfirst - обязан - всегда - найтись
-                        // делаю sandhi.add и возвращаюсь сюда
+                        // делаю sandhi.add и возвращаюсь сюда - с гитой!
 
                         var newfirst;
                         var newtails;
                         var added = sandhi.add(first, second);
+                        log('A', added)
                         if (added.length > 1) {
-                            log('added.length > 1', afirst, asecond, first, second, 'add', added);
+                            log('added.length > 1', 'afirst:', afirst, 'asecond:', asecond, 'f:', first, 's:', second, 'added:', added);
                             throw new Error('added.length > 1');
                         }
                         added = added[0];
