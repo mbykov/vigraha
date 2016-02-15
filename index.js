@@ -87,19 +87,22 @@ function cutTail(samasa) {
         vows++;
         flake = samasa.slice(0, cutpos);
         rawtail = samasa.slice(cutpos);
+        cutpos++;
+        // if (rawtail.length < 1) continue;
         beg = rawtail[0];
         // log('====== samasa', samasa, 'Flake', flake, 'Tail', rawtail, 'B', beg, '========');
-        cutpos++;
         if (beg && !u.isConsonant(beg)) continue;
         // if (samasa, rawtail) continue;
         res = sandhi.del(samasa, rawtail);
+        log('R', cutpos, 'samasa', samasa, 'rawt', rawtail, 'res', res);
         if (!res) continue;
         if (res.length == 0) continue; // ???
         firsts = res.map(function(r) { return r.firsts});
         firsts = _.uniq(_.flatten(firsts));
+        firsts = _.select(firsts, function(f) { return f.length > 1});
         flakes.push(firsts);
     }
-    flakes = _.uniq(_.flatten(flakes)); // FIXME: это не работает
+    flakes = _.uniq(_.flatten(flakes)); // FIXME: это не работает - почему?
     return flakes;
 }
 
@@ -125,7 +128,7 @@ rasper.prototype.cut = function(samasa) {
     flakes.forEach(function(flake, idx) {
         var firsts = flake.firsts;
         firsts = _.uniq(firsts);
-        log('=========================FIRSTS:', firsts);
+        // log('=========================FIRSTS:', firsts);
         firsts.forEach(function(afirst, idy) {
             // log('IDX', idx, idy)
             var tails = flake.tails;
@@ -133,14 +136,14 @@ rasper.prototype.cut = function(samasa) {
                 atail.forEach(function(asecond, idw) {
 
                     // if (afirst != 'त्विद') return;
-                    log('start flake:', idx, idy, 'afirst:', afirst, 'tails', idz, idw, 'asecond:', asecond);
+                    // log('start flake:', idx, idy, 'afirst:', afirst, 'tails', idz, idw, 'asecond:', asecond);
                     // return;
 
                     var pdch = [ afirst];
                     function getPada(first, second, depth) {
                         if (!pdch) return;
                         depth++;
-                        if (depth > 3) return;
+                        if (depth > 5) return;
                         pdch.push(second);
                         // HERE: ======================
                         // короче, нужно тупо применить sandhi.add
@@ -151,11 +154,11 @@ rasper.prototype.cut = function(samasa) {
                         var newtails;
                         var addres = sandhi.add(first, second);
                         if (addres.length > 1) {
-                            log('addres.length > 1', 'afirst:', afirst, 'asecond:', asecond, 'f:', first, 's:', second, 'added:', addres);
+                            // log('addres.length > 1', 'afirst:', afirst, 'asecond:', asecond, 'f:', first, 's:', second, 'added:', addres);
                             // throw new Error('addres.length > 1');
                         }
                         // var added = addres[0];
-                        log('Addres:', 'f:', first, 's:',second, 'addres:', addres);
+                        // log('Addres:', 'f:', first, 's:',second, 'addres:', addres);
 
                         var newidx;
                         // selecting next-level flake:
@@ -167,7 +170,7 @@ rasper.prototype.cut = function(samasa) {
                             firsts = _.uniq(firsts);
                             inter = _.intersection(firsts, addres);
                             if (inter.length > 0) {
-                                log('INTER', 'firsts:', firsts, 'addres:', addres, 'f:', first, 's:', second, 'inter:', inter)
+                                // log('INTER', 'firsts:', firsts, 'addres:', addres, 'f:', first, 's:', second, 'inter:', inter)
                                 newfirst = addres;
                                 if (inter.length == 1) newfirst = inter[0];
                                 else  log('INTER >1: afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'addres', addres);
@@ -192,9 +195,9 @@ rasper.prototype.cut = function(samasa) {
                         if (newtails.length == 0) {
                             // log('ENDS', newfirst)
                             pdchs.push(pdch);
-                            pdch = [ first, second];
-                            if (idw == atail.length-1) pdch = false;
-                            // pdch = false;
+                            // pdch = [ first, second];
+                            // if (idw == atail.length-1) pdch = false;
+                            pdch = false;
                             return;
                         }
                         if (!newtails) log('NO TAILS', newflake);
@@ -234,7 +237,7 @@ rasper.prototype.cut = function(samasa) {
         // var ends = u.endsWith(pdch[size], 'म्')
         // if (!ends) log('===========>>>', JSON.stringify(pdch));
 
-        // योगान् // योग // योगानुशास् // एतेषाम् // तु // त्विदमेत्
+        // योगान् // योग // योगानुशास् // एतेषाम् // तु // त्विदमेत् // त्विदम्
     });
     log('size', samasa.length, '-->', pdchs.length)
     return [];
