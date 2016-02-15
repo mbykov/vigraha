@@ -132,15 +132,15 @@ rasper.prototype.cut = function(samasa) {
             tails.forEach(function(atail, idz) {
                 atail.forEach(function(asecond, idw) {
 
-                    if (afirst != 'त्विद') return;
-                    log('flake:', idx, idy, 'afirst:', afirst, 'tails', idz, idw, 'asecond:', asecond);
+                    // if (afirst != 'त्विद') return;
+                    log('start flake:', idx, idy, 'afirst:', afirst, 'tails', idz, idw, 'asecond:', asecond);
                     // return;
 
                     var pdch = [ afirst];
                     function getPada(first, second, depth) {
                         if (!pdch) return;
                         depth++;
-                        if (depth > 2) return;
+                        if (depth > 3) return;
                         pdch.push(second);
                         // HERE: ======================
                         // короче, нужно тупо применить sandhi.add
@@ -152,40 +152,45 @@ rasper.prototype.cut = function(samasa) {
                         var addres = sandhi.add(first, second);
                         if (addres.length > 1) {
                             log('addres.length > 1', 'afirst:', afirst, 'asecond:', asecond, 'f:', first, 's:', second, 'added:', addres);
-                            throw new Error('addres.length > 1');
+                            // throw new Error('addres.length > 1');
                         }
-                        var added = addres[0];
-                        log('A:', 'f:', first, 's:',second, 'added:', added);
+                        // var added = addres[0];
+                        log('Addres:', 'f:', first, 's:',second, 'addres:', addres);
+
                         var newidx;
+                        // selecting next-level flake:
+                        var inter;
                         flakes.forEach(function(flake, idx_) {
                             // if (idx < idx_) return;
                             // if (found) return;
                             var firsts = flake.firsts;
                             firsts = _.uniq(firsts);
-                            firsts.forEach(function(f, idy_) {
-                                // if (u.startsWith(f, cfirst) && u.endsWith(f, csecond)) {
-                                if (f == added) {
-                                    newfirst = f;
-                                    newtails = flake.tails;
-                                    newidx = idx_;
-                                    // log('NF', newfirst);
-                                    // found = true;
-                                    return;
-                                }
-                            });
+                            inter = _.intersection(firsts, addres);
+                            if (inter.length > 0) {
+                                log('INTER', 'firsts:', firsts, 'addres:', addres, 'f:', first, 's:', second, 'inter:', inter)
+                                newfirst = addres;
+                                if (inter.length == 1) newfirst = inter[0];
+                                else  log('INTER >1: afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'addres', addres);
+
+                                newtails = flake.tails;
+                                newidx = idx_;
+                                return;
+                            }
                         });
-                        log('NNNFFF', newfirst)
+                        // log('NNNFFF', newfirst)
                         if (!newfirst) {
                             // log('afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'cfirst', cfirst, 'csecond', csecond);
-                            log('afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'added', added);
+                            log('NO NEWFIRST: afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'addres:', addres);
+                            log('NO NEWFIRST - addres:', addres)
                             throw new Error('!!!!=============== NO NEW FIRST');
+                            return;
                         }
 
                         // if (pdch.length - depth != 1) return;
                         // if (second == 'इदम्') log('==>', first, 'nf', newfirst, newtails)
 
                         if (newtails.length == 0) {
-                            log('ENDS', newfirst)
+                            // log('ENDS', newfirst)
                             pdchs.push(pdch);
                             pdch = [ first, second];
                             if (idw == atail.length-1) pdch = false;
@@ -206,7 +211,7 @@ rasper.prototype.cut = function(samasa) {
                         // pdch.push(1111);
                     } // end getPada
 
-                    // getPada(afirst, asecond, 0);
+                    getPada(afirst, asecond, 0);
                 }); // tail
             }); // tails
 
@@ -223,7 +228,8 @@ rasper.prototype.cut = function(samasa) {
     // p(uniq);
     pdchs.forEach(function(pdch) {
         // log('===========>>>', pdch)
-        if (pdch[0] == 'त्विदमेत्' ) log('===========>>>', JSON.stringify(pdch));
+        // if (pdch[0] == 'त्विदमेत्' ) log('===========>>>', JSON.stringify(pdch));
+        if (pdch[0] == 'त्विदम्' ) log('===========>>>', JSON.stringify(pdch));
         // var size = pdch.length-1;
         // var ends = u.endsWith(pdch[size], 'म्')
         // if (!ends) log('===========>>>', JSON.stringify(pdch));
