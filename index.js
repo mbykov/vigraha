@@ -194,11 +194,17 @@ rasper.prototype.cut = function(samasa) {
 
                         if (newtails.length == 0) {
                             // log('ENDS', newfirst)
-                            pdchs.push(pdch);
-                            // pdch = [ first, second];
-                            // if (idw == atail.length-1) pdch = false;
-                            pdch = false;
-                            return;
+                            // pdch.push(1);
+                            // pdch = [ afirst, asecond];
+                            // pdch.push(depth);
+                            var json = JSON.stringify(pdch);
+                            var ready = JSON.parse(json);
+                            pdchs.push(ready);
+                            // pdch.pop();
+                            // pdch.pop();
+                            // if (idw == atail.length) pdch = [ afirst, asecond];
+                            // pdch = false;
+                            // return;
                         }
                         if (!newtails) log('NO TAILS', newflake);
                         newtails.forEach(function(newtail, idz_) {
@@ -212,6 +218,7 @@ rasper.prototype.cut = function(samasa) {
                             });
                         });
                         // pdch.push(1111);
+                        pdch.pop();
                     } // end getPada
 
                     getPada(afirst, asecond, 0);
