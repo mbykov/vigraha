@@ -132,12 +132,15 @@ rasper.prototype.cut = function(samasa) {
             tails.forEach(function(atail, idz) {
                 atail.forEach(function(asecond, idw) {
 
-                    log('flake:', idx, idy, afirst, 'tails', idz, idw, asecond);
+                    if (afirst != 'त्विद') return;
+                    log('flake:', idx, idy, 'afirst:', afirst, 'tails', idz, idw, 'asecond:', asecond);
+                    // return;
 
                     var pdch = [ afirst];
                     function getPada(first, second, depth) {
                         if (!pdch) return;
                         depth++;
+                        if (depth > 2) return;
                         pdch.push(second);
                         // HERE: ======================
                         // короче, нужно тупо применить sandhi.add
@@ -146,19 +149,13 @@ rasper.prototype.cut = function(samasa) {
 
                         var newfirst;
                         var newtails;
-                        var added = sandhi.add(first, second);
-                        log('A', added)
-                        if (added.length > 1) {
-                            log('added.length > 1', 'afirst:', afirst, 'asecond:', asecond, 'f:', first, 's:', second, 'added:', added);
-                            throw new Error('added.length > 1');
+                        var addres = sandhi.add(first, second);
+                        if (addres.length > 1) {
+                            log('addres.length > 1', 'afirst:', afirst, 'asecond:', asecond, 'f:', first, 's:', second, 'added:', addres);
+                            throw new Error('addres.length > 1');
                         }
-                        added = added[0];
-                        // var cfirst = (first.length > 3) ? first.slice(0, -2) : first;
-                        var fin = u.last(first);
-                        var cfirst = (u.isVowel(fin)) ? u.wolast(first) : first;
-                        if (fin == c.virama) cfirst = u.wolast(first);
-                        var csecond = u.wofirstIfVow(second);
-                        var found = false;
+                        var added = addres[0];
+                        log('A:', 'f:', first, 's:',second, 'added:', added);
                         var newidx;
                         flakes.forEach(function(flake, idx_) {
                             // if (idx < idx_) return;
@@ -171,13 +168,13 @@ rasper.prototype.cut = function(samasa) {
                                     newfirst = f;
                                     newtails = flake.tails;
                                     newidx = idx_;
-                                    // log('NF', newfirst)
-                                    found = true;
+                                    // log('NF', newfirst);
+                                    // found = true;
                                     return;
                                 }
                             });
                         });
-                        // log('NNNFFF', newfirst)
+                        log('NNNFFF', newfirst)
                         if (!newfirst) {
                             // log('afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'cfirst', cfirst, 'csecond', csecond);
                             log('afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'added', added);
@@ -188,6 +185,7 @@ rasper.prototype.cut = function(samasa) {
                         // if (second == 'इदम्') log('==>', first, 'nf', newfirst, newtails)
 
                         if (newtails.length == 0) {
+                            log('ENDS', newfirst)
                             pdchs.push(pdch);
                             pdch = [ first, second];
                             if (idw == atail.length-1) pdch = false;
@@ -208,7 +206,7 @@ rasper.prototype.cut = function(samasa) {
                         // pdch.push(1111);
                     } // end getPada
 
-                    getPada(afirst, asecond, 0);
+                    // getPada(afirst, asecond, 0);
                 }); // tail
             }); // tails
 
