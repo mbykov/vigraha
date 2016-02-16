@@ -34,7 +34,7 @@ function runGitaTests() {
                 if (line.form == '।') return;
                 if (!line.dicts) return;
                 // log(idy)
-                if (idy !=6) return;
+                // if (idy !=6) return;
                 var samasa = line.form;
                 var next = doc.lines[idy+1];
                 var clean = outer(samasa, next);
@@ -63,7 +63,7 @@ function runGitaTests() {
                 if (!exists) {
                     // p(flakes);
                     var salat = salita.sa2slp(samasa);
-                    log('samasa:', salat, '-', samasa, 'dicts:', dicts, 'cleans:', cleans);
+                    log('gita.js: no existing key ! - samasa:', salat, '-', samasa, 'dicts:', dicts, 'cleans:', cleans);
                     throw new Error('NO EXISTING KEY');
                 }
             });

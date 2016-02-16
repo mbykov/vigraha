@@ -33,7 +33,7 @@ res =  (pdch) ? flakes.cut(samasa) : flakes.scrape(samasa);
 log('flakes:');
 // log(res);
 // console.log(util.inspect(res, showHidden=false, depth=null, colorize=true));
-// p(res);
+p(res);
 log('RUN: flakes size:', samasa.length, '-->', res.length)
 
 

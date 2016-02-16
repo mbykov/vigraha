@@ -113,7 +113,7 @@ rasper.prototype.cut = function(samasa) {
     // var flakefirsts = flakes.map(function(flake) { return flake.firsts});
     // flakefirsts = _.uniq(_.flatten(flakefirsts));
     var salat = salita.sa2slp(samasa);
-    if (debug) log('Fs', flakefirsts);
+    // if (debug) log('Fs', flakefirsts);
 
     var pdchs = [];
     flakes.forEach(function(flake, idx) {
@@ -124,6 +124,7 @@ rasper.prototype.cut = function(samasa) {
             // log('IDX', idx, idy)
             var tails = flake.tails;
             tails.forEach(function(atail, idz) {
+                // log('=========================FIRST:', afirst, 'atail', atail);
                 atail.forEach(function(asecond, idw) {
 
                     // if (afirst != 'त्विद') return;
@@ -144,14 +145,14 @@ rasper.prototype.cut = function(samasa) {
                         var newfirst;
                         var newtails;
                         var addres = sandhi.add(first, second);
-                        if (addres.length > 1) {
-                            // log('addres.length > 1', 'afirst:', afirst, 'asecond:', asecond, 'f:', first, 's:', second, 'added:', addres);
-                            // throw new Error('addres.length > 1');
-                        }
+                        // if (addres.length > 1) {
+                        //     // log('addres.length > 1', 'afirst:', afirst, 'asecond:', asecond, 'f:', first, 's:', second, 'added:', addres);
+                        //     // throw new Error('addres.length > 1');
+                        // }
                         // var added = addres[0];
                         // log('Addres:', 'f:', first, 's:',second, 'addres:', addres);
 
-                        var newidx;
+                        // var newidx;
                         // selecting next-level flake:
                         var inter;
                         flakes.forEach(function(flake, idx_) {
@@ -167,15 +168,14 @@ rasper.prototype.cut = function(samasa) {
                                 else  log('INTER >1: afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'addres', addres);
 
                                 newtails = flake.tails;
-                                newidx = idx_;
+                                // newidx = idx_;
                                 return;
                             }
                         });
                         // log('NNNFFF', newfirst)
                         if (!newfirst) {
-                            log('NO NEWFIRST:', salat, '-', samasa);
-                            log('afirst:', afirst, 'asecond', asecond, 'first', first, 'second', second);
-                            log('add res:', addres);
+                            log('NO NEWFIRST:', salat, '-', samasa, 'afirst:', afirst, 'asecond', asecond);
+                            log('first:', first, 'second:', second, 'add res:', addres);
                             throw new Error('!!!!=============== NO NEW FIRST');
                             return;
                         }
@@ -203,7 +203,7 @@ rasper.prototype.cut = function(samasa) {
                                 // pdch.push(asecond);
                                 // if (idw > idw_) return;
                                 // if (!pdch) pdch = [ first, second];
-                                if (afirst == 'त्विद्') log('cycle==> A afirst:', afirst, 'asec:', asecond, 'NOW f;', first, 'sec:', second, 'CYCLE', 'bsec:', bsecond, 'nf:', newfirst, 'pdch:', pdch, 'id', idx, idy, idz, idw, 'idx_', newidx, idz_, idw_);
+                                // if (afirst == 'त्विद्') log('cycle==> A afirst:', afirst, 'asec:', asecond, 'NOW f;', first, 'sec:', second, 'CYCLE', 'bsec:', bsecond, 'nf:', newfirst, 'pdch:', pdch, 'id', idx, idy, idz, idw, 'idx_?'); // , newidx, idz_, idw_
                                 // if (first == 'त्विदमेत्') log('cycle==> f:', first, 'sec', second, 'nf:', newfirst, 'asec:', asecond, 'bsec', bsecond, 'pdch:', pdch, 'newtail', newtail);
                                 getPada(newfirst, bsecond, depth);
                             });
@@ -230,7 +230,7 @@ rasper.prototype.cut = function(samasa) {
     pdchs.forEach(function(pdch) {
         // log('===========>>>', pdch)
         // if (pdch[0] == 'त्विदमेत्' ) log('===========>>>', JSON.stringify(pdch));
-        // if (pdch[0] == 'त्विदम्' ) log('===========>>>', JSON.stringify(pdch));
+        // if (pdch[0] == 'तु' ) log('===========>>>', JSON.stringify(pdch));
         // var size = pdch.length-1;
         // var ends = u.endsWith(pdch[size], 'म्')
         // if (!ends) log('===========>>>', JSON.stringify(pdch));
