@@ -1,8 +1,5 @@
 // по образцу sandhi/test/gita/dict2clean
 // читает db gita, пропускает через sandhi.outer, sandhi.del,
-
-// это, по сути, файл тестов ? перенести в sandhi/tests
-//
 //
 
 var salita = require('salita-component');
@@ -47,19 +44,26 @@ function runGitaTests() {
                     return correct(dict, next); // simple outer, only M
                 })
                 var flakes = rasper.cut(clean);
-                // p(flakes);
+                // log('flakes.size', flakes.length);
                 // log(samasa, dicts, cleans);
                 // return;
                 var exists = false;
-                var key, test;
+                var key;
+                var test = cleans.join('-');
+                // log('CLEANS', test);
                 flakes.forEach(function(flake) {
+                    // if (flake[0] == 'पाण्डवाः') log('F', flake);
                     key = flake.join('-');
-                    test = cleans.join('-');
-                    if (key == test) exists = true;
+                    if (key == test) {
+                        // log('TRUE')
+                        exists = true;
+                        return;
+                    }
                 });
                 if (!exists) {
-                    p(flakes);
-                    log(samasa, dicts, cleans);
+                    // p(flakes);
+                    var salat = salita.sa2slp(samasa);
+                    log('samasa:', salat, '-', samasa, 'dicts:', dicts, 'cleans:', cleans);
                     throw new Error('NO EXISTING KEY');
                 }
             });

@@ -94,36 +94,27 @@ function cutTail(samasa) {
         if (beg && !u.isConsonant(beg)) continue;
         // if (samasa, rawtail) continue;
         res = sandhi.del(samasa, rawtail);
-        log('R', cutpos, 'samasa', samasa, 'rawt', rawtail, 'res', res);
+        // log('R', cutpos, 'samasa', samasa, 'rawt', rawtail, 'res', res);
         if (!res) continue;
         if (res.length == 0) continue; // ???
         firsts = res.map(function(r) { return r.firsts});
         firsts = _.uniq(_.flatten(firsts));
-        firsts = _.select(firsts, function(f) { return f.length > 1});
+        firsts = _.select(firsts, function(f) { return inc(['च'], f) || f.length > 1}); // longer than 1
         flakes.push(firsts);
     }
     flakes = _.uniq(_.flatten(flakes)); // FIXME: это не работает - почему?
     return flakes;
 }
 
-/*
-  простой перебор:
-  первая пада - к ней tails, сколько есть
-  firsrt + tail - равнятется одному из последующий firsts (м.б. нет в словаре, это ok)
-  но - нужный first искать придется по начало...хвост, то есть без гласных в конце first и начале tail
-  к этой частичной паде - опять все tails, сколько есть
-  затем для полученной последовательности вычисляется вес
-  ==
-  обозримо
-  2. создать спец. БД для тестов гиты, потому что в couch/sa может не быть нужного stem-а, а заниматься слиянием баз сейчас не с руки, и недолго
-*/
-
+// 'च',
 
 rasper.prototype.cut = function(samasa) {
     var flakes = this.scrape(samasa);
-    var flakefirsts = flakes.map(function(flake) { return flake.firsts});
+    // var flakefirsts = flakes.map(function(flake) { return flake.firsts});
     // flakefirsts = _.uniq(_.flatten(flakefirsts));
-    log('Fs', flakefirsts);
+    var salat = salita.sa2slp(samasa);
+    if (debug) log('Fs', flakefirsts);
+
     var pdchs = [];
     flakes.forEach(function(flake, idx) {
         var firsts = flake.firsts;
@@ -182,9 +173,9 @@ rasper.prototype.cut = function(samasa) {
                         });
                         // log('NNNFFF', newfirst)
                         if (!newfirst) {
-                            // log('afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'cfirst', cfirst, 'csecond', csecond);
-                            log('NO NEWFIRST: afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'addres:', addres);
-                            log('NO NEWFIRST - addres:', addres)
+                            log('NO NEWFIRST:', salat, '-', samasa);
+                            log('afirst:', afirst, 'asecond', asecond, 'first', first, 'second', second);
+                            log('add res:', addres);
                             throw new Error('!!!!=============== NO NEW FIRST');
                             return;
                         }
@@ -239,43 +230,16 @@ rasper.prototype.cut = function(samasa) {
     pdchs.forEach(function(pdch) {
         // log('===========>>>', pdch)
         // if (pdch[0] == 'त्विदमेत्' ) log('===========>>>', JSON.stringify(pdch));
-        if (pdch[0] == 'त्विदम्' ) log('===========>>>', JSON.stringify(pdch));
+        // if (pdch[0] == 'त्विदम्' ) log('===========>>>', JSON.stringify(pdch));
         // var size = pdch.length-1;
         // var ends = u.endsWith(pdch[size], 'म्')
         // if (!ends) log('===========>>>', JSON.stringify(pdch));
 
-        // योगान् // योग // योगानुशास् // एतेषाम् // तु // त्विदमेत् // त्विदम्
+        // योगान् // योग // योगानुशास् // एतेषाम् // तु // त्विदमेत् // त्विदम् // 'पाण्डवाः' == 'पाण्डवाः'
     });
-    log('size', samasa.length, '-->', pdchs.length)
-    return [];
-    // return pdchs;
-}
-
-function getPada_(pdchs, pdch, flakes, flakefirsts, first, tails) {
-    // if (!tails) log('NO TAILS', first);
-    tails.forEach(function(tail, idz) {
-        // log(tail)
-        tail.forEach(function(second, idw) {
-            var cfirst = first.slice(0, -1);
-            var csecond = u.wofirstIfVow(second); // FIXME: S-cC case?
-            // log('CF', cfirst, 'CS', csecond);
-            var newfirst = _.find(flakefirsts, function(f) { return u.startsWith(f, cfirst) && u.endsWith(f, csecond)});
-            // log('NWE FIRST', newfirst);
-            pdch.push(second);
-            // if (newfirst) log('F', first, 'CF', cfirst, 'CS', csecond, '=NF=', newfirst);
-            if (!newfirst) return;
-            var newflake = _.find(flakes, function(f) {return inc(f.firsts, newfirst)});
-            var newtails = newflake.tails;
-            if (!newtails) log('NO TAILS', newflake);
-            getPada(pdchs, pdch, flakes, flakefirsts, newfirst, newtails);
-        });
-        pdch.push(1111);
-        if (pdch[0] == 8) log('=================888', tail)
-        // pdchs.push(pdch);
-        // pdch = ['A'];
-        // return pdch;
-    });
-    // return pdch;
+    log('flakes size:', salat, samasa, samasa.length, '-->', pdchs.length)
+    // return [];
+    return pdchs;
 }
 
 
