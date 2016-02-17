@@ -50,7 +50,7 @@ rasper.prototype.scrape = function(rawsamasa) {
         var res = sandhi.del(rawsamasa, samasa);
         // log('R', res);
         if (res.length == 0) {
-            log('======================>>>>>>>> ZERO RES', rawsamasa, 'samasa:', samasa, rawsamasa == samasa);
+            // log('======================>>>>>>>> ZERO RES', rawsamasa, 'samasa:', samasa, rawsamasa == samasa);
             continue;
         }
         res.forEach(function(result) {
@@ -83,7 +83,9 @@ function cutTail(samasa) {
     var vows = 0;
     var flake, rawtail, res;
     var firsts = [];
-    while (cutpos < 10) {
+    var size = samasa.length+1;
+    // log('SIZE', samasa.length)
+    while (cutpos < size) {
         vows++;
         flake = samasa.slice(0, cutpos);
         rawtail = samasa.slice(cutpos);
