@@ -30,6 +30,7 @@ function runGitaTests() {
         docs = docs.slice(0,10);
         docs.forEach(function(doc, idx) {
             // p(doc);
+            log('IDX', idx, 'sutra:', doc.num);
             doc.lines.forEach(function(line, idy) {
                 if (line.form == '।') return;
                 if (!line.dicts) return;
