@@ -71,7 +71,6 @@ function runGitaTests() {
     });
 }
 
-// xxx
 // // добавляет в doc поле clean:
 // // в случае saH, eshaH, ye - outer достаточно, можно как-то пометить, как окончательный результат. Или все равно, сл. этап - termins?
 // function cleaner(docs) {
