@@ -29,7 +29,7 @@ var bugs = ['यावदेतान्निरीक्षेऽहं'];
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(10);
+        docs = docs.slice(19);
         docs.forEach(function(doc, idx) {
             // p(doc);
             log('IDX', idx, 'sutra:', doc.num);
@@ -40,6 +40,10 @@ function runGitaTests() {
                 // if (idy !=6) return;
                 var samasa = line.form;
                 if (inc(bugs, samasa)) return;
+                if (samasa.length > 19) {
+                    log('LONG:', samasa, 'size:', samasa.length);
+                    return;
+                }
                 var next = doc.lines[idy+1];
                 var clean = outer(samasa, next);
                 var dicts = line.dicts.map(function(dict) { return dict.form });
@@ -85,6 +89,7 @@ function correct(str, next) {
     var clean = str;
     var fin = u.last(str);
     if (!next) next = '';
+    if (!next.form) next = ''; // откуда тут объект? д.б. строка только
     var beg = next[0];
     var n = 'म';
     // здесь изображение правила: doubled palatal - var dental = u.palatal2dental(mark.fin);
@@ -92,9 +97,8 @@ function correct(str, next) {
     if (fin == c.anusvara) clean = [u.wolast(str), n, c.virama].join('');
     // три простые правила, как в outer ?
     // else if (fin == 'ो' && inc(c.soft, beg)) clean = [u.wolast(str), c.visarga].join('');
-    // if (fin == 'ो' ) log('===========================', clean, 2, next, 3)
+    // else if (fin == 'ो' && inc(c.soft, beg)) log('OOO', str, 'beg', beg, 222) // परयाो
     // else if (fin == 'ा' && (inc(c.allvowels, beg) || inc(c.soft, beg))) clean = [samasa, c.visarga].join('');
-    // if (inc(c.soft, beg)) log('============>>>>>>', fin, 2, beg, 3, fin == 'ो' ) // मय्यर्पितमनो
     return clean;
 }
 
