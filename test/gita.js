@@ -29,7 +29,7 @@ var bugs = ['यावदेतान्निरीक्षेऽहं'];
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(20);
+        docs = docs.slice(25);
         docs.forEach(function(doc, idx) {
             // p(doc);
             log('IDX', idx, 'sutra:', doc.num);
@@ -45,10 +45,15 @@ function runGitaTests() {
                     return;
                 }
                 var next = doc.lines[idy+1];
+                next = (next) ? next.form : '';
+                // log('SAM', samasa, 'NEXT', next)
                 var clean = outer(samasa, next);
+                // log('CLEAN', clean);
+                // log('_ID', doc._id)
                 var dicts = line.dicts.map(function(dict) { return dict.form });
                 var cleans = dicts.map(function(dict, idz) {
                     var next = dicts[idz+1];
+                    next = (next) ? next.form : '';
                     return correct(dict, next); // simple outer, only M
                 })
                 var flakes = rasper.cut(clean);
@@ -58,9 +63,9 @@ function runGitaTests() {
                 var exists = false;
                 var key;
                 var test = cleans.join('-');
-                // log('CLEANS', test);
+                // if (test == 'प्राणान्-त्यक्त्वा') log('Text', test);
                 flakes.forEach(function(flake) {
-                    // if (flake[0] == 'पाण्डवाः') log('F', flake);
+                    // if (flake[0] == 'प्राणान्') log('F', flake);
                     key = flake.join('-');
                     if (key == test) {
                         // log('TRUE')

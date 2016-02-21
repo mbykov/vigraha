@@ -101,7 +101,7 @@ function cutTail(samasa) {
         if (res.length == 0) continue; // ???
         firsts = res.map(function(r) { return r.firsts});
         firsts = _.uniq(_.flatten(firsts));
-        firsts = _.select(firsts, function(f) { return inc(['च'], f) || f.length > 1}); // longer than 1
+        firsts = _.select(firsts, function(f) { return inc(['च', 'न', 'स'], f) || f.length > 1}); // longer than 1
         flakes.push(firsts);
     }
     flakes = _.uniq(_.flatten(flakes)); // FIXME: это не работает - почему?
