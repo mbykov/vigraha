@@ -29,7 +29,7 @@ var bugs = ['यावदेतान्निरीक्षेऽहं'];
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(25);
+        docs = docs.slice(35);
         docs.forEach(function(doc, idx) {
             // p(doc);
             log('IDX', idx, 'sutra:', doc.num);
