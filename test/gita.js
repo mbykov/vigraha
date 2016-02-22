@@ -24,22 +24,20 @@ var rasper = require('../index');
 
 runGitaTests();
 
-var bugs = ['यावदेतान्निरीक्षेऽहं'];
 
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(50);
+        docs = docs.slice(58);
         docs.forEach(function(doc, idx) {
             // p(doc);
-            log('IDX', idx, 'sutra:', doc.num);
+            log('IDX', idx, 'sutra:', doc.num, '_ID', doc._id);
             doc.lines.forEach(function(line, idy) {
                 if (line.form == '।') return;
                 if (!line.dicts) return;
                 // log(idy)
                 // if (idy !=6) return;
                 var samasa = line.form;
-                if (inc(bugs, samasa)) return;
                 if (samasa.length > 19) {
                     log('LONG:', samasa, 'size:', samasa.length);
                     return;
@@ -48,8 +46,7 @@ function runGitaTests() {
                 next = (next) ? next.form : '';
                 // log('SAM', samasa, 'NEXT', next)
                 var clean = outer(samasa, next);
-                // log('CLEAN', clean);
-                // log('_ID', doc._id)
+                // log('CLEAN', clean, 'next', next);
                 var dicts = line.dicts.map(function(dict) { return dict.form });
                 var cleans = dicts.map(function(dict, idz) {
                     var next = dicts[idz+1];
@@ -59,13 +56,13 @@ function runGitaTests() {
                 var flakes = rasper.cut(clean);
                 // log('flakes.size', flakes.length);
                 // log(samasa, dicts, cleans);
-                // return;
+
                 var exists = false;
                 var key;
                 var test = cleans.join('-');
-                // if (test == 'प्राणान्-त्यक्त्वा') log('Text', test);
+                // if (test == 'अहम्-आत्मा') log('key', test);
                 flakes.forEach(function(flake) {
-                    // if (flake[0] == 'प्राणान्') log('F', flake);
+                    // if (flake[0] == 'अहम्') log('F', flake);
                     key = flake.join('-');
                     if (key == test) {
                         // log('TRUE')
@@ -76,7 +73,8 @@ function runGitaTests() {
                 if (!exists) {
                     // p(flakes);
                     var salat = salita.sa2slp(samasa);
-                    log('gita.js: no existing key ! - samasa:', salat, '-', samasa, 'dicts:', dicts, 'cleans:', cleans);
+                    // var clelat = salita.sa2slp(clean);
+                    log('NO existing key - samasa:', salat, '-', samasa, 'dicts:', dicts, 'cleans:', cleans);
                     throw new Error('NO EXISTING KEY');
                 }
             });

@@ -44,9 +44,10 @@ rasper.prototype.scrape = function(rawsamasa) {
         samasa = rawsamasa.slice(pos);
         beg = u.first(samasa);
         pos++;
-        if (beg && !u.isConsonant(beg)) continue;
+        // if (beg && !u.isConsonant(beg)) continue;
+        if (beg && ! (u.isConsonant(beg) || beg == c.M)) continue;
         // if (rawsamasa == samasa) continue;
-        // log('pos', pos, 'R', rawsamasa, 'S', samasa, 'B', beg);
+        // log('pos', pos, 'R', rawsamasa, 'S', samasa, 'B', beg, beg == c.M, c.M);
         var res = sandhi.del(rawsamasa, samasa);
         // log('R', res);
         if (res.length == 0) {
@@ -93,7 +94,8 @@ function cutTail(samasa) {
         // if (rawtail.length < 1) continue;
         beg = rawtail[0];
         // log('====== samasa', samasa, 'Flake', flake, 'Tail', rawtail, 'B', beg, '========');
-        if (beg && !u.isConsonant(beg)) continue;
+        // log('====== beg', beg, beg == c.M, '========');
+        if (beg && ! (u.isConsonant(beg) || beg == c.M)) continue;
         // if (samasa, rawtail) continue;
         res = sandhi.del(samasa, rawtail);
         // log('R', cutpos, 'samasa', samasa, 'rawt', rawtail, 'res', res);
@@ -140,10 +142,6 @@ rasper.prototype.cut = function(samasa) {
                         depth++;
                         if (depth > 5) return;
                         pdch.push(second);
-                        // HERE: ======================
-                        // короче, нужно тупо применить sandhi.add
-                        // и newfirst - обязан - всегда - найтись
-                        // делаю sandhi.add и возвращаюсь сюда - с гитой!
 
                         var newfirst;
                         var newtails;
