@@ -47,7 +47,7 @@ rasper.prototype.scrape = function(rawsamasa) {
         // if (beg && !u.isConsonant(beg)) continue;
         if (beg && ! (u.isConsonant(beg) || beg == c.M)) continue;
         // if (rawsamasa == samasa) continue;
-        // log('pos', pos, 'R', rawsamasa, 'S', samasa, 'B', beg, beg == c.M, c.M);
+        // log('pos', pos, 'R', rawsamasa, 'S', samasa, 'B', beg);
         var res = sandhi.del(rawsamasa, samasa);
         // log('R', res);
         if (res.length == 0) {

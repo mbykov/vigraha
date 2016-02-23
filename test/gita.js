@@ -28,7 +28,7 @@ runGitaTests();
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(70);
+        docs = docs.slice(80);
         docs.forEach(function(doc, idx) {
             // p(doc);
             log('IDX', idx, 'sutra:', doc.num, '_ID', doc._id);
@@ -46,13 +46,27 @@ function runGitaTests() {
                 next = (next) ? next.form : '';
                 // log('SAM', samasa, 'NEXT', next)
                 var clean = outer(samasa, next);
-                // log('CLEAN', clean, 'next', next);
+                // log('CLEAN samasa:', samasa, 'clean:', clean, 'next:', next);
+                // долгая А заменяется на visarga только если такая замена есть в резутьтате - last of dicts
+                // по сути, я подглядываю ответ
+                // может быть, можно просмотреть все такие случаи и увидеть закономеность? Например, слова на -r?
+                var last = clean[clean.length-1];
+                if (last == c.H) {
+                    var lastdict = line.dicts[line.dicts.length-1];
+                    var lastform = lastdict.form;
+                    var lastlastdict = lastform[lastform.length-1];
+                    // log('HHHHHHHHHHHHHHHHHHHHH', lastdict, lastlastdict, 33, lastlastdict == c.A);
+                    if (lastlastdict == c.A) clean = samasa;
+                }
+                // конечно, нужно будет отменить "второе простое правило" про -А в outer-sandhi
+
+
                 var dicts = line.dicts.map(function(dict) { return dict.form });
                 var cleans = dicts.map(function(dict, idz) {
                     var next = dicts[idz+1];
                     next = (next) ? next.form : '';
                     return correct(dict, next); // simple outer, only M
-                })
+                });
                 var flakes = rasper.cut(clean);
                 // log('flakes.size', flakes.length);
                 // log(samasa, dicts, cleans);
@@ -60,9 +74,10 @@ function runGitaTests() {
                 var exists = false;
                 var key;
                 var test = cleans.join('-');
-                // if (test == 'अहम्-आत्मा') log('key', test);
+                // 'स्मृतिः-मेधा'
+                // if (test == 'स्मृतिः') log('key', test);
                 flakes.forEach(function(flake) {
-                    // if (flake[0] == 'अहम्') log('F', flake);
+                    // if (flake[0] == 'स्मृतिः') log('F', flake);
                     key = flake.join('-');
                     if (key == test) {
                         // log('TRUE')
