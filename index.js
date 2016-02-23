@@ -50,7 +50,7 @@ rasper.prototype.scrape = function(rawsamasa) {
         // log('pos', pos, 'R', rawsamasa, 'S', samasa, 'B', beg);
         var res = sandhi.del(rawsamasa, samasa);
         // log('R', res);
-        if (res.length == 0) {
+        if (!res || res.length == 0) {
             // log('======================>>>>>>>> ZERO RES', rawsamasa, 'samasa:', samasa, rawsamasa == samasa);
             continue;
         }

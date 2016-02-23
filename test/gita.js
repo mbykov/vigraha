@@ -38,6 +38,9 @@ function runGitaTests() {
                 // log(idy)
                 // if (idy !=6) return;
                 var samasa = line.form;
+
+                if (samasa.indexOf('ऽ') > -1) return; // потому что аваграха обрабатывается иначе - деление всегда сразу по ней
+
                 if (samasa.length > 19) {
                     log('LONG:', samasa, 'size:', samasa.length);
                     return;
