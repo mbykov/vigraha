@@ -28,7 +28,7 @@ runGitaTests();
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(300);
+        docs = docs.slice(345);
         docs.forEach(function(doc, idx) {
             // p(doc);
             log('IDX', idx, 'sutra:', doc.num, '_ID', doc._id);

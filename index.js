@@ -108,10 +108,9 @@ function cutTail(samasa) {
         flakes.push(firsts);
     }
     flakes = _.uniq(_.flatten(flakes)); // FIXME: это не работает - почему?
+    // TODO: здесь проверить на двойную согласную в конце слова, две вирамы, в конце и третья с конца
     return flakes;
 }
-
-// 'च',
 
 rasper.prototype.cut = function(samasa) {
     var flakes = this.scrape(samasa);
@@ -132,9 +131,7 @@ rasper.prototype.cut = function(samasa) {
                 // log('=========================FIRST:', afirst, 'atail', atail);
                 atail.forEach(function(asecond, idw) {
 
-                    // if (afirst != 'त्विद') return;
                     // log('start flake:', idx, idy, 'afirst:', afirst, 'tails', idz, idw, 'asecond:', asecond);
-                    // return;
 
                     var pdch = [ afirst];
                     function getPada(first, second, depth) {
@@ -148,14 +145,7 @@ rasper.prototype.cut = function(samasa) {
                         var newtails;
                         var res = sandhi.add(first, second);
                         var addres = res.map(function(r) { return r.samasa});
-                        // if (addres.length > 1) {
-                        //     // log('addres.length > 1', 'afirst:', afirst, 'asecond:', asecond, 'f:', first, 's:', second, 'added:', addres);
-                        //     // throw new Error('addres.length > 1');
-                        // }
-                        // var added = addres[0];
-                        // log('Addres:', 'f:', first, 's:',second, 'addres:', addres);
 
-                        // var newidx;
                         // selecting next-level flake:
                         var inter;
                         flakes.forEach(function(flake, idx_) {
@@ -188,26 +178,13 @@ rasper.prototype.cut = function(samasa) {
                         // if (second == 'इदम्') log('==>', first, 'nf', newfirst, newtails)
 
                         if (newtails.length == 0) {
-                            // log('ENDS', newfirst)
-                            // pdch.push(1);
-                            // pdch = [ afirst, asecond];
-                            // pdch.push(depth);
                             var json = JSON.stringify(pdch);
                             var ready = JSON.parse(json);
                             pdchs.push(ready);
-                            // pdch.pop();
-                            // pdch.pop();
-                            // if (idw == atail.length) pdch = [ afirst, asecond];
-                            // pdch = false;
-                            // return;
                         }
                         if (!newtails) log('NO TAILS', newflake);
                         newtails.forEach(function(newtail, idz_) {
                             newtail.forEach(function(bsecond, idw_) {
-                                // pdch.push(asecond);
-                                // if (idw > idw_) return;
-                                // if (!pdch) pdch = [ first, second];
-                                // if (afirst == 'त्विद्') log('cycle==> A afirst:', afirst, 'asec:', asecond, 'NOW f;', first, 'sec:', second, 'CYCLE', 'bsec:', bsecond, 'nf:', newfirst, 'pdch:', pdch, 'id', idx, idy, idz, idw, 'idx_?');
                                 getPada(newfirst, bsecond, depth);
                             });
                         });
