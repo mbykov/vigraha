@@ -28,7 +28,7 @@ runGitaTests();
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(165);
+        docs = docs.slice(270);
         docs.forEach(function(doc, idx) {
             // p(doc);
             log('IDX', idx, 'sutra:', doc.num, '_ID', doc._id);
@@ -55,11 +55,13 @@ function runGitaTests() {
                 // может быть, можно просмотреть все такие случаи и увидеть закономеность? Например, слова на -r?
                 var last = clean[clean.length-1];
                 if (last == c.H) {
+                    // log('HHHXS', samasa)
                     var lastdict = line.dicts[line.dicts.length-1];
                     var lastform = lastdict.form;
                     var lastlastdict = lastform[lastform.length-1];
                     // log('HHHHHHHHHHHHHHHHHHHHH', lastdict, lastlastdict, 33, lastlastdict == c.A);
                     if (lastlastdict == c.A) clean = samasa;
+                    if (lastlastdict == 'ो') clean = samasa;
                 }
                 // конечно, нужно будет отменить "второе простое правило" про -А в outer-sandhi
 
@@ -78,9 +80,9 @@ function runGitaTests() {
                 var key;
                 var test = cleans.join('-');
                 // 'स्मृतिः-मेधा'
-                // if (test == 'स्मृतिः') log('key', test);
+                if (test == 'सत्त्वम्') log('key', test);
                 flakes.forEach(function(flake) {
-                    // if (flake[0] == 'स्मृतिः') log('F', flake);
+                    if (flake[0] == 'सत्त्वम्') log('F', flake);
                     key = flake.join('-');
                     if (key == test) {
                         // log('TRUE')
