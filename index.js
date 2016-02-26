@@ -117,8 +117,8 @@ rasper.prototype.cut = function(samasa) {
     var flakes = this.scrape(samasa);
     // var flakefirsts = flakes.map(function(flake) { return flake.firsts});
     // flakefirsts = _.uniq(_.flatten(flakefirsts));
+    // log('Fs', flakefirsts);
     var salat = salita.sa2slp(samasa);
-    // if (debug) log('Fs', flakefirsts);
 
     var pdchs = [];
     flakes.forEach(function(flake, idx) {
@@ -142,6 +142,7 @@ rasper.prototype.cut = function(samasa) {
                         depth++;
                         if (depth > 5) return;
                         pdch.push(second);
+                        // log('f', first, 's', second, 'd', depth)
 
                         var newfirst;
                         var newtails;
@@ -177,7 +178,7 @@ rasper.prototype.cut = function(samasa) {
                         });
                         // log('NNNFFF', newfirst)
                         if (!newfirst) {
-                            log('NO NEWFIRST:', salat, '-', samasa, 'afirst:', afirst, 'asecond', asecond);
+                            log('NO NEWFIRST:', salat, '-', samasa, 'afirst:', afirst, 'asecond', asecond, 'depth', depth);
                             log('first:', first, 'second:', second, 'add res:', addres);
                             throw new Error('!!!!=============== NO NEW FIRST');
                             return;
@@ -207,7 +208,6 @@ rasper.prototype.cut = function(samasa) {
                                 // if (idw > idw_) return;
                                 // if (!pdch) pdch = [ first, second];
                                 // if (afirst == 'त्विद्') log('cycle==> A afirst:', afirst, 'asec:', asecond, 'NOW f;', first, 'sec:', second, 'CYCLE', 'bsec:', bsecond, 'nf:', newfirst, 'pdch:', pdch, 'id', idx, idy, idz, idw, 'idx_?');
-                                // if (first == 'त्विदमेत्') log('cycle==> f:', first, 'sec', second, 'nf:', newfirst, 'asec:', asecond, 'bsec', bsecond, 'pdch:', pdch, 'newtail', newtail);
                                 getPada(newfirst, bsecond, depth);
                             });
                         });
