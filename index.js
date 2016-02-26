@@ -145,7 +145,8 @@ rasper.prototype.cut = function(samasa) {
 
                         var newfirst;
                         var newtails;
-                        var addres = sandhi.add(first, second);
+                        var res = sandhi.add(first, second);
+                        var addres = res.map(function(r) { return r.samasa});
                         // if (addres.length > 1) {
                         //     // log('addres.length > 1', 'afirst:', afirst, 'asecond:', asecond, 'f:', first, 's:', second, 'added:', addres);
                         //     // throw new Error('addres.length > 1');
@@ -166,10 +167,11 @@ rasper.prototype.cut = function(samasa) {
                                 // log('INTER', 'firsts:', firsts, 'addres:', addres, 'f:', first, 's:', second, 'inter:', inter)
                                 newfirst = addres;
                                 if (inter.length == 1) newfirst = inter[0];
-                                else  log('INTER >1: afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'addres', addres);
-
+                                else {
+                                    log('INTER >1: afirst', afirst, 'asecond', asecond, 'first', first, 'second', second, 'addres', addres);
+                                    throw new Error('BAD INTERSECTION');
+                                }
                                 newtails = flake.tails;
-                                // newidx = idx_;
                                 return;
                             }
                         });
@@ -204,7 +206,7 @@ rasper.prototype.cut = function(samasa) {
                                 // pdch.push(asecond);
                                 // if (idw > idw_) return;
                                 // if (!pdch) pdch = [ first, second];
-                                // if (afirst == 'त्विद्') log('cycle==> A afirst:', afirst, 'asec:', asecond, 'NOW f;', first, 'sec:', second, 'CYCLE', 'bsec:', bsecond, 'nf:', newfirst, 'pdch:', pdch, 'id', idx, idy, idz, idw, 'idx_?'); // , newidx, idz_, idw_
+                                // if (afirst == 'त्विद्') log('cycle==> A afirst:', afirst, 'asec:', asecond, 'NOW f;', first, 'sec:', second, 'CYCLE', 'bsec:', bsecond, 'nf:', newfirst, 'pdch:', pdch, 'id', idx, idy, idz, idw, 'idx_?');
                                 // if (first == 'त्विदमेत्') log('cycle==> f:', first, 'sec', second, 'nf:', newfirst, 'asec:', asecond, 'bsec', bsecond, 'pdch:', pdch, 'newtail', newtail);
                                 getPada(newfirst, bsecond, depth);
                             });
