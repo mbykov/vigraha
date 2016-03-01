@@ -28,7 +28,7 @@ runGitaTests();
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(400);
+        docs = docs.slice(560);
         docs.forEach(function(doc, idx) {
             // p(doc);
             log('IDX', idx, 'sutra:', doc.num, '_ID', doc._id);
@@ -48,6 +48,8 @@ function runGitaTests() {
                 var next = doc.lines[idy+1];
                 next = (next) ? next.form : '';
                 // log('SAM', samasa, 'NEXT', next)
+                var fin = u.last(samasa);
+                // log('FIN', fin)
                 var clean = outer(samasa, next);
                 // log('CLEAN samasa:', samasa, 'clean:', clean, 'next:', next);
                 // долгая А заменяется на visarga только если такая замена есть в резутьтате - last of dicts
@@ -82,7 +84,7 @@ function runGitaTests() {
                 // 'स्मृतिः-मेधा'
                 if (test == 'सत्त्वम्') log('key', test);
                 flakes.forEach(function(flake) {
-                    if (flake[0] == 'सत्त्वम्') log('F', flake);
+                    // if (flake[0] == 'सत्त्वम्') log('F', flake);
                     key = flake.join('-');
                     if (key == test) {
                         // log('TRUE')

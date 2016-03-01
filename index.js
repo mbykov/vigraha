@@ -128,29 +128,30 @@ rasper.prototype.cut = function(samasa) {
             // log('IDX', idx, idy)
             var tails = flake.tails;
             tails.forEach(function(atail, idz) {
-                // log('=========================FIRST:', afirst, 'atail', atail);
+                // if (afirst == 'विगतेच्छा') log('=========================FIRST:', afirst, 'atail', atail);
                 atail.forEach(function(asecond, idw) {
 
                     // log('start flake:', idx, idy, 'afirst:', afirst, 'tails', idz, idw, 'asecond:', asecond);
+                    // if (afirst == 'विगतेच्छा') log('f', afirst, 's', asecond)
 
                     var pdch = [ afirst];
                     function getPada(first, second, depth) {
                         if (!pdch) return;
                         depth++;
-                        if (depth > 5) return;
+                        // if (depth > 5) return;
                         pdch.push(second);
-                        // log('f', first, 's', second, 'd', depth)
+                        // if (first == 'विगतेच्छा' && second == 'भय') log('==> f:', first, 's:', second, 'd:', depth)
 
                         var newfirst;
-                        var newtails;
+                        var newtails = [];
                         var res = sandhi.add(first, second);
                         var addres = res.map(function(r) { return r.samasa});
 
+                        // if (first == 'विगत' && second == 'इच्छा')  log('ADD RES', addres, 111, afirst, asecond);
                         // selecting next-level flake:
                         var inter;
+                        var oks = []; // suitable, good flakes
                         flakes.forEach(function(flake, idx_) {
-                            // if (idx < idx_) return;
-                            // if (found) return;
                             var firsts = flake.firsts;
                             firsts = _.uniq(firsts);
                             inter = _.intersection(firsts, addres);
@@ -163,10 +164,31 @@ rasper.prototype.cut = function(samasa) {
                                     throw new Error('BAD INTERSECTION');
                                 }
                                 newtails = flake.tails;
-                                return;
+                                if (inter.length == 1) oks.push(flake);
+                                // return;
+                            } else {
+                                // if (first == 'विगतेच्छा' && second == 'भय') log('NO INTERSECTION')
                             }
                         });
-                        // log('NNNFFF', newfirst)
+                        /*
+                          значит, нужно выбирать ВСЕ подходящие flakes и объединять tails ?
+                          или - еще один цикл по подходящим flakes ?
+                        */
+                        // newtails = oks.map(function(f) { return f.tails });
+                        newtails = [];
+                        oks.forEach(function(f) {
+                            // if (first == 'विगत' && second == 'इच्छा') log(f)
+                            f.tails.forEach(function(tail) {
+                                // if (first == 'विगत' && second == 'इच्छा') log(tail);
+                                newtails.push(tail);
+                            });
+
+                        });
+
+                        // if (first == 'विगत' && second == 'इच्छा') p('NEWFIRST', oks);
+                        // if (first == 'विगत' && second == 'इच्छा') log('NEWFIRST', newfirst, newtails);
+                        // return;
+
                         if (!newfirst) {
                             log('NO NEWFIRST:', salat, '-', samasa, 'afirst:', afirst, 'asecond', asecond, 'depth', depth);
                             log('first:', first, 'second:', second, 'add res:', addres);
@@ -174,17 +196,18 @@ rasper.prototype.cut = function(samasa) {
                             return;
                         }
 
-                        // if (pdch.length - depth != 1) return;
-                        // if (second == 'इदम्') log('==>', first, 'nf', newfirst, newtails)
+                        // if (first == 'विगत' && second == 'इच्छा') log('NEWFIRST', newfirst, 'tails:', newtails.length, pdch, 111, afirst, 222, asecond);
 
                         if (newtails.length == 0) {
                             var json = JSON.stringify(pdch);
                             var ready = JSON.parse(json);
                             pdchs.push(ready);
+                            // if (first == 'विगतेच्छाभय' && second == 'क्रोधः') log('PUSH', pdch);
                         }
-                        if (!newtails) log('NO TAILS', newflake);
+
                         newtails.forEach(function(newtail, idz_) {
                             newtail.forEach(function(bsecond, idw_) {
+                                // if (newfirst == 'विगतेच्छाभय' && bsecond == 'क्रोधः') log('NEXT LEVEL', idz_, idw_);
                                 getPada(newfirst, bsecond, depth);
                             });
                         });
