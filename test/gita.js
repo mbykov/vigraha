@@ -28,14 +28,14 @@ runGitaTests();
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(560);
+        docs = docs.slice(655);
         docs.forEach(function(doc, idx) {
             // p(doc);
             log('IDX', idx, 'sutra:', doc.num, '_ID', doc._id);
             doc.lines.forEach(function(line, idy) {
                 if (line.form == '।') return;
                 if (!line.dicts) return;
-                // log(idy)
+                // log('LINE', line)
                 // if (idy !=6) return;
                 var samasa = line.form;
 
@@ -57,7 +57,7 @@ function runGitaTests() {
                 // может быть, можно просмотреть все такие случаи и увидеть закономеность? Например, слова на -r?
                 var last = clean[clean.length-1];
                 if (last == c.H) {
-                    // log('HHHXS', samasa)
+                    // log('HHHXS', line)
                     var lastdict = line.dicts[line.dicts.length-1];
                     var lastform = lastdict.form;
                     var lastlastdict = lastform[lastform.length-1];
