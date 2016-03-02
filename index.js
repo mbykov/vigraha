@@ -74,27 +74,55 @@ rasper.prototype.scrape = function(rawsamasa) {
 }
 
 rasper.prototype.cut = function(samasa) {
+    var that = this;
     var salat = salita.sa2slp(samasa);
-    var cuttedByPos = this.scrape(samasa);
-
     var pdchs = [];
-    cuttedByPos.forEach(function(flakes, idx) {
-        // log('========================= FLAKES:', idx, flakes);
-        flakes.forEach(function(flake, idy) {
+
+    var cuttedByPos = that.scrape(samasa);
+    cuttedByPos.forEach(function(aflakes, idx) {
+        // log('========================= FLAKES:', idx, aflakes);
+        aflakes.forEach(function(aflake, idy) {
             // log('========================= FLAKE:', flake);
-            flake.firsts.forEach(function(afirst, idz) {
+            aflake.firsts.forEach(function(afirst, idz) {
                 // log('========================= AFIRST:', afirst);
-                var pdch = [afirst];
-                flake.seconds.forEach(function(asecond, idw) {
-                    log('========================= AFIRST:', afirst, 'asec:', asecond);
+                var pdch = [];
+                pdch.push(afirst);
+                aflake.seconds.forEach(function(asecond, idw) {
+                    // pdchs.push([afirst, asecond]);
+                    pdch.push(asecond);
+                    // log('========================= AFIRST:', afirst, 'asec:', asecond);
+                    function getPada(asecond) {
+                        var cuttedByPos = that.scrape(asecond);
+                        cuttedByPos.forEach(function(flakes, idx) {
+                            // log('========================= FLAKES:', idx, flakes);
+                            flakes.forEach(function(flake, idy) {
+                                // log('========================= FLAKE:', flake);
+                                flake.firsts.forEach(function(first, idz) {
+                                    // log('========================= AFIRST:', first);
+                                    pdch.push(first);
+                                    flake.seconds.forEach(function(second, idw) {
+                                        pdch.push(second);
+                                        getPada(second);
+                                        // log('========================= AFIRST:', afirst, 'asec:', asecond);
+                                        pdch.pop();
+                                    }); //second
+                                    // pdchs.push(pdch);
+                                    // pdch = [];
+                                    pdch.pop();
+                                }); // first
+                            });
+                        });
+                    }
+                    getPada(asecond);
 
-                });
-
-            });
+                    pdchs.push(pdch);
+                    // pdch = [];
+                }); // asecond
+            }); // afirst
 
         });
     });
-
+    p(pdchs);
     log('pdchs size:', salat, samasa, samasa.length, '-->', pdchs.length)
     return [];
     // return pdchs;
