@@ -28,7 +28,7 @@ runGitaTests();
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(675);
+        docs = docs.slice(460);
         docs.forEach(function(doc, idx) {
             // p(doc);
             log('IDX', idx, 'sutra:', doc.num, '_ID', doc._id);
@@ -48,7 +48,7 @@ function runGitaTests() {
                 var next = doc.lines[idy+1];
                 next = (next) ? next.form : '';
                 // log('SAM', samasa, 'NEXT', next)
-                var fin = u.last(samasa);
+                // var fin = u.last(samasa);
                 // log('FIN', fin)
                 var clean = outer(samasa, next);
                 // log('CLEAN samasa:', samasa, 'clean:', clean, 'next:', next);
@@ -60,14 +60,15 @@ function runGitaTests() {
                     // log('HHHXS', line)
                     var lastdict = line.dicts[line.dicts.length-1];
                     var lastform = lastdict.form;
-                    var lastlastdict = lastform[lastform.length-1];
-                    // log('HHHHHHHHHHHHHHHHHHHHH', lastdict, lastlastdict, 33, lastlastdict == c.A);
-                    if (lastlastdict == c.A) clean = samasa;
-                    if (lastlastdict == 'ो') clean = samasa;
-                    if (u.isConsonant(lastlastdict)) clean = samasa;
+                    var fin = lastform[lastform.length-1];
+                    // log('HHHHHHHHHHHHHHHHHHHHH', lastdict, fin, 33, fin == c.A);
+                    if (fin == c.A) clean = samasa;
+                    if (fin == 'ो') clean = samasa;
+                    if (fin == 'े') clean = [samasa, c.e].join(''); // это верно, только если samasa на -a
+                    if (u.isConsonant(fin)) clean = samasa;
                 }
                 // конечно, нужно будет отменить "второе простое правило" про -А в outer-sandhi
-
+                // log('CLEAN FIXED - samasa:', samasa, 'clean:', clean);
 
                 var dicts = line.dicts.map(function(dict) { return dict.form });
                 var cleans = dicts.map(function(dict, idz) {
