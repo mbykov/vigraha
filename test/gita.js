@@ -28,7 +28,7 @@ runGitaTests();
 function runGitaTests() {
     getDocs(function(docs) {
         // var cleans = cleaner(docs)
-        docs = docs.slice(655);
+        docs = docs.slice(675);
         docs.forEach(function(doc, idx) {
             // p(doc);
             log('IDX', idx, 'sutra:', doc.num, '_ID', doc._id);
@@ -64,6 +64,7 @@ function runGitaTests() {
                     // log('HHHHHHHHHHHHHHHHHHHHH', lastdict, lastlastdict, 33, lastlastdict == c.A);
                     if (lastlastdict == c.A) clean = samasa;
                     if (lastlastdict == 'ो') clean = samasa;
+                    if (u.isConsonant(lastlastdict)) clean = samasa;
                 }
                 // конечно, нужно будет отменить "второе простое правило" про -А в outer-sandhi
 
