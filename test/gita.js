@@ -17,7 +17,8 @@ var inc = u.include;
 var Relax = require('relax-component');
 var relax = new Relax('http://admin:kjre4317@localhost:5984');
 relax.dbname('gita');
-var rasper = require('../index');
+// var rasper = require('../index');
+var rasper = require('../weak_add'); // слабый вариант, требующий add в рекурсии
 
 
 // var lat = process.argv.slice(2)[0] || false;
@@ -45,6 +46,7 @@ function runGitaTests() {
                     log('LONG:', samasa, 'size:', samasa.length);
                     return;
                 }
+
                 var next = doc.lines[idy+1];
                 next = (next) ? next.form : '';
                 // log('SAM', samasa, 'NEXT', next)
