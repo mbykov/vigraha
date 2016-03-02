@@ -8,6 +8,7 @@ var util = require('util');
 
 var salita = require('salita-component');
 var flakes = require('./index');
+// var flakes = require('./weak_add');
 var s = require('sandhi');
 var u = s.u;
 var log = u.log;

@@ -78,50 +78,27 @@ rasper.prototype.cut = function(samasa) {
     var salat = salita.sa2slp(samasa);
     var pdchs = [];
 
-    var cuttedByPos = that.scrape(samasa);
-    cuttedByPos.forEach(function(aflakes, idx) {
-        // log('========================= FLAKES:', idx, aflakes);
-        aflakes.forEach(function(aflake, idy) {
-            // log('========================= FLAKE:', flake);
-            aflake.firsts.forEach(function(afirst, idz) {
-                // log('========================= AFIRST:', afirst);
-                var pdch = [];
-                pdch.push(afirst);
-                aflake.seconds.forEach(function(asecond, idw) {
-                    // pdchs.push([afirst, asecond]);
-                    pdch.push(asecond);
-                    // log('========================= AFIRST:', afirst, 'asec:', asecond);
-                    function getPada(asecond) {
-                        var cuttedByPos = that.scrape(asecond);
-                        cuttedByPos.forEach(function(flakes, idx) {
-                            // log('========================= FLAKES:', idx, flakes);
-                            flakes.forEach(function(flake, idy) {
-                                // log('========================= FLAKE:', flake);
-                                flake.firsts.forEach(function(first, idz) {
-                                    // log('========================= AFIRST:', first);
-                                    pdch.push(first);
-                                    flake.seconds.forEach(function(second, idw) {
-                                        pdch.push(second);
-                                        getPada(second);
-                                        // log('========================= AFIRST:', afirst, 'asec:', asecond);
-                                        pdch.pop();
-                                    }); //second
-                                    // pdchs.push(pdch);
-                                    // pdch = [];
-                                    pdch.pop();
-                                }); // first
-                            });
-                        });
+    function getPada(samasa, pdch) {
+        var cuttedByPos = that.scrape(samasa);
+        cuttedByPos.forEach(function(flakes, idx) {
+            flakes.forEach(function(flake, idy) {
+                flake.firsts.forEach(function(first, idz) {
+                    if (first.length == 1 && !inc(['च', 'न', 'स'], first)) return;
+                    // if (first.length < 5) return;
+                    pdch.push(first);
+                    if (flake.seconds.length == 0) {
+                        var clone = JSON.parse(JSON.stringify(pdch));
+                        pdchs.push(clone);
                     }
-                    getPada(asecond);
-
-                    pdchs.push(pdch);
-                    // pdch = [];
-                }); // asecond
-            }); // afirst
-
+                    flake.seconds.forEach(function(second, idw) {
+                        getPada(second, pdch);
+                    }); // second
+                    pdch.pop();
+                }); // first
+            });
         });
-    });
+    }
+    getPada(samasa, []);
     p(pdchs);
     log('pdchs size:', salat, samasa, samasa.length, '-->', pdchs.length)
     return [];
