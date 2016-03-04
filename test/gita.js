@@ -1,5 +1,7 @@
 // по образцу sandhi/test/gita/dict2clean
 // читает db gita, пропускает через sandhi.outer, sandhi.del,
+// раскладывает sandhi (имеющие dicts) на padas, считает варианты цепочек,
+// реальная расшифровка должна быть обнаружена среди всех вариантов
 //
 
 var salita = require('salita-component');
@@ -14,11 +16,13 @@ var outer = s.outer;
 var log = u.log;
 var p = u.p;
 var inc = u.include;
+
 var Relax = require('relax-component');
 var relax = new Relax('http://admin:kjre4317@localhost:5984');
 relax.dbname('gita');
-// var rasper = require('../index');
-var rasper = require('../weak_add'); // слабый вариант, требующий add в рекурсии
+
+var rasper = require('../index');
+// var rasper = require('../weak_add'); // слабый вариант, требующий add в рекурсии
 
 
 // var lat = process.argv.slice(2)[0] || false;

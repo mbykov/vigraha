@@ -28,8 +28,9 @@ if (/[a-zA-Z]/.test(lat[0])) {
 
 log('_la_:', lat, '_sa_:', samasa);
 
-var res;
-res =  (pdch) ? flakes.cut(samasa) : flakes.scrape(samasa);
+console.time('rasper');
+var res =  (pdch) ? flakes.cut(samasa) : flakes.scrape(samasa);
+console.timeEnd('rasper');
 
 log('flakes:');
 // log(res);

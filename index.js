@@ -16,10 +16,10 @@ var salita = require('salita-component'); // FIXME: это нужно убрат
 var debug = (process.env.debug == 'true') ? true : false;
 
 // FIXME: это временно, потом перенести в morph-0.3
-dbpath = 'http://localhost:5984';
-var Relax = require('relax-component');
-var relax = new Relax(dbpath);
-relax.dbname('gita');
+// dbpath = 'http://localhost:5984';
+// var Relax = require('relax-component');
+// var relax = new Relax(dbpath);
+// relax.dbname('gita');
 
 module.exports = rasper();
 
@@ -53,22 +53,9 @@ rasper.prototype.scrape = function(rawsamasa) {
             // log('======================>>>>>>>> ZERO RES', rawsamasa, 'samasa:', samasa, rawsamasa == samasa);
             continue;
         }
-        // res.forEach(function(result) {
-            // result.tails = result.seconds.map(function(second) { return cutTail(second)});
-        // });
-        // if (res.length == 0) continue; // откуда это?
-        // if (pos == 7) res = res.slice(0,2);
-        // log('R', pos, res)
-        // if (res[0].num) continue; // это samasa == second, уродство, выкинуть в sandhi?
-        // var key = res.map(function(result) { return _.uniq(result.firsts).join('-')});
         flakes.push(res);
     }
 
-    // flakes = _.flatten(flakes);
-    // flakes = flakes.map(function(flake, idx) {
-    //     flake.idx = idx;
-    //     return flake;
-    // });
     // return [];
     return flakes;
 }
@@ -84,13 +71,15 @@ rasper.prototype.cut = function(samasa) {
             flakes.forEach(function(flake, idy) {
                 flake.firsts.forEach(function(first, idz) {
                     if (first.length == 1 && !inc(['च', 'न', 'स'], first)) return;
-                    // if (first.length < 5) return;
+                    // if (syllables(first) < 3) return;
+                    // if (syllables(first) > 4) return;
                     pdch.push(first);
                     if (flake.seconds.length == 0) {
                         var clone = JSON.parse(JSON.stringify(pdch));
                         pdchs.push(clone);
                     }
                     flake.seconds.forEach(function(second, idw) {
+                        // if (syllables(second) > 5) return;
                         getPada(second, pdch);
                     }); // second
                     pdch.pop();
@@ -99,20 +88,21 @@ rasper.prototype.cut = function(samasa) {
         });
     }
     getPada(samasa, []);
-    p(pdchs);
+    // if (pdchs.length < 20)
+    // p(pdchs);
     log('pdchs size:', salat, samasa, samasa.length, '-->', pdchs.length)
-    return [];
-    // return pdchs;
+    // return [];
+    return pdchs;
 }
 
 
-// function vowCount(flake) {
-//     var syms = flake.split('');
-//     var beg = syms[0];
-//     var vows = (u.isVowel(beg)) ? 1 : 0;
-//     syms.forEach(function(s) {
-//         if (u.isConsonant(s)) vows+=1;
-//         else if (s == c.virama) vows-=1;
-//     });
-//     return vows;
-// }
+function syllables(flake) {
+    var syms = flake.split('');
+    var beg = syms[0];
+    var vows = (u.isVowel(beg)) ? 1 : 0;
+    syms.forEach(function(s) {
+        if (u.isConsonant(s)) vows+=1;
+        else if (s == c.virama) vows-=1;
+    });
+    return vows;
+}
