@@ -39,6 +39,9 @@ rasper.prototype.scrape = function(rawsamasa) {
     var pos = 0;
     var beg;
     var res;
+    // total = 10;
+    // загадочная история - почему при ограничении total результаты cut не уникальны?
+    // и их поэтому много больше ?
     while (pos < total) {
         samasa = rawsamasa.slice(pos);
         beg = u.first(samasa);
@@ -71,15 +74,15 @@ rasper.prototype.cut = function(samasa) {
             flakes.forEach(function(flake, idy) {
                 flake.firsts.forEach(function(first, idz) {
                     if (first.length == 1 && !inc(['च', 'न', 'स'], first)) return;
-                    // if (syllables(first) < 3) return;
-                    // if (syllables(first) > 4) return;
+                    // if (syllables(first) < 2) return;
+                    // if (syllables(first) > 5) return;
                     pdch.push(first);
                     if (flake.seconds.length == 0) {
                         var clone = JSON.parse(JSON.stringify(pdch));
                         pdchs.push(clone);
                     }
                     flake.seconds.forEach(function(second, idw) {
-                        // if (syllables(second) > 5) return;
+                        // if (syllables(second) < 3) return;
                         getPada(second, pdch);
                     }); // second
                     pdch.pop();
@@ -90,7 +93,7 @@ rasper.prototype.cut = function(samasa) {
     getPada(samasa, []);
     // if (pdchs.length < 20)
     // p(pdchs);
-    log('pdchs size:', salat, samasa, samasa.length, '-->', pdchs.length)
+    // log('pdchs size:', salat, samasa, samasa.length, '-->', pdchs.length)
     // return [];
     return pdchs;
 }
