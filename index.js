@@ -75,7 +75,7 @@ rasper.prototype.cut = function(samasa) {
                 flake.firsts.forEach(function(first, idz) {
                     if (first.length == 1 && !inc(['च', 'न', 'स'], first)) return;
                     // if (syllables(first) < 2) return;
-                    // if (syllables(first) > 5) return;
+                    if (syllables(first) > 5) return;
                     pdch.push(first);
                     if (flake.seconds.length == 0) {
                         var clone = JSON.parse(JSON.stringify(pdch));
