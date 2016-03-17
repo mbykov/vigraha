@@ -73,7 +73,7 @@ rasper.prototype.cut = function(samasa) {
         cuttedByPos.forEach(function(flakes, idx) {
             flakes.forEach(function(flake, idy) {
                 flake.firsts.forEach(function(first, idz) {
-                    if (first.length == 1 && !inc(['च', 'न', 'स'], first)) return;
+                    if (first.length == 1 && !inc(['च', 'न', 'स', 'ॐ'], first)) return;
                     // if (syllables(first) < 2) return;
                     // if (syllables(first) > 5) return;
                     pdch.push(first);
