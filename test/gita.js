@@ -82,7 +82,7 @@ function runGitaTests() {
                     next = (next) ? next.form : '';
                     return correct(dict, next); // simple outer, only M
                 });
-                var flakes = rasper.cut(clean);
+                var flakes = rasper.pdchs(clean);
                 // log('flakes.size', flakes.length);
                 // log(samasa, dicts, cleans);
 

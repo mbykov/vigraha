@@ -1,10 +1,10 @@
 {
   "name": "vigraha",
   "version": "0.3.0",
-  "description": "cut samasa into possible chains - padacCeda",
+  "description": "cut Sanskrit samasa into possible chains - padacCeda",
   "main": "index.js",
   "scripts": {
-    "test": "make test"
+    "test": "make gita"
   },
   "keywords": [
     "sanscrit",
