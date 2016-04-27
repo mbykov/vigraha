@@ -36,14 +36,14 @@ function runGitaTests() {
         // docs = docs.slice(460);
         docs.forEach(function(doc, idx) {
             // p(doc);
-            // log('IDX', idx, 'sutra:', doc.num, '_ID', doc._id);
+            log('IDX', idx, 'sutra:', doc.num, '_ID', doc._id);
             doc.lines.forEach(function(line, idy) {
                 if (line.form == '।') return;
                 if (!line.dicts) return;
-                if (doc.num != '1.20') return;
+                // if (doc.num != '1.20') return;
                 var samasa = line.form;
-                if (samasa != 'व्यवस्थितान्दृष्ट्वा') return;
-                log('LINE', line)
+                // if (samasa != 'व्यवस्थितान्दृष्ट्वा') return;
+                // log('LINE', line)
 
                 if (samasa.indexOf('ऽ') > -1) return; // потому что аваграха обрабатывается иначе - деление всегда сразу по ней
 
@@ -58,7 +58,7 @@ function runGitaTests() {
                 // var fin = u.last(samasa);
                 // log('FIN', fin)
                 var clean = outer(samasa, next);
-                log('CLEAN samasa:', samasa, 'clean:', clean, 'next:', next);
+                // log('CLEAN samasa:', samasa, 'clean:', clean, 'next:', next);
                 // долгая А заменяется на visarga только если такая замена есть в резутьтате - last of dicts
                 // по сути, я подглядываю ответ
                 // может быть, можно просмотреть все такие случаи и увидеть закономеность? Например, слова на -r?
@@ -68,14 +68,13 @@ function runGitaTests() {
                     var lastdict = line.dicts[line.dicts.length-1];
                     var lastform = lastdict.form;
                     var fin = lastform[lastform.length-1];
-                    log('HHHHHHHHHHHHHHHHHHHHH', lastdict, fin, 33, fin == c.A);
                     if (fin == c.A) clean = samasa;
                     if (fin == 'ो') clean = samasa;
                     if (fin == 'े') clean = [samasa, c.e].join(''); // это верно, только если samasa на -a
                     if (u.isConsonant(fin)) clean = samasa;
                 }
                 // конечно, нужно будет отменить "второе простое правило" про -А в outer-sandhi
-                log('CLEAN FIXED - samasa:', samasa, 'clean:', clean);
+                // log('CLEAN FIXED - samasa:', samasa, 'clean:', clean);
 
                 var dicts = line.dicts.map(function(dict) { return dict.form });
                 var cleans = dicts.map(function(dict, idz) {

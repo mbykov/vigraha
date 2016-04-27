@@ -7,8 +7,8 @@ var pdch = process.argv.slice(3)[0] || false;
 var util = require('util');
 
 var salita = require('salita-component');
-var flakes = require('./index');
-// var flakes = require('./weak_add');
+var vigraha = require('./index');
+// var vigraha = require('./weak_add');
 var s = require('sandhi');
 var u = s.u;
 var log = u.log;
@@ -29,14 +29,14 @@ if (/[a-zA-Z]/.test(lat[0])) {
 log('_la_:', lat, '_sa_:', samasa);
 
 console.time('rasper');
-var res =  (pdch) ? flakes.cut(samasa) : flakes.scrape(samasa);
+var res =  (pdch) ? vigraha.pdchs(samasa) : vigraha.scrape(samasa);
 console.timeEnd('rasper');
 
-log('flakes:');
+log('vigraha:');
 // log(res);
 // console.log(util.inspect(res, showHidden=false, depth=null, colorize=true));
 p(res);
-log('RUN: flakes size:', samasa.length, '-->', res.length)
+log('RUN: vigraha size:', samasa.length, '-->', res.length)
 
 
 

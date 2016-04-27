@@ -52,18 +52,18 @@ clean:
 	rm -rf build #components
 
 # Run the server
-server: bin/server node_modules
-	@node --harmony $<
+# server: bin/server node_modules
+# 	@node --harmony $<
 
-test:
-	@NODE_ENV=test ./node_modules/.bin/mocha \
-		--require should \
-		--reporter $(REPORTER) \
-		--slow 500 \
-		--grep $(g) \
-		--timeout 3000 \
-		$(TESTS) \
-		2> /dev/null
+# test:
+# 	@NODE_ENV=test ./node_modules/.bin/mocha \
+# 		--require should \
+# 		--reporter $(REPORTER) \
+# 		--slow 500 \
+# 		--grep $(g) \
+# 		--timeout 3000 \
+# 		$(TESTS) \
+# 		2> /dev/null
 
 gita:
 	@node test/gita.js

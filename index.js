@@ -15,23 +15,17 @@ var p = u.p;
 var salita = require('salita-component'); // FIXME: это нужно убрать
 var debug = (process.env.debug == 'true') ? true : false;
 
-// FIXME: это временно, потом перенести в morph-0.3
-// dbpath = 'http://localhost:5984';
-// var Relax = require('relax-component');
-// var relax = new Relax(dbpath);
-// relax.dbname('gita');
+module.exports = vigraha();
 
-module.exports = rasper();
-
-function rasper() {
-    if (!(this instanceof rasper)) return new rasper();
+function vigraha() {
+    if (!(this instanceof vigraha)) return new vigraha();
     return this;
 }
 
 /*
 */
 
-rasper.prototype.scrape = function(rawsamasa) {
+vigraha.prototype.scrape = function(rawsamasa) {
     var total = rawsamasa.length+1;
     var flakes = [];
     // var flake = {};
@@ -39,9 +33,6 @@ rasper.prototype.scrape = function(rawsamasa) {
     var pos = 0;
     var beg;
     var res;
-    // total = 10;
-    // загадочная история - почему при ограничении total результаты cut не уникальны?
-    // и их поэтому много больше ?
     while (pos < total) {
         samasa = rawsamasa.slice(pos);
         beg = u.first(samasa);
@@ -63,7 +54,7 @@ rasper.prototype.scrape = function(rawsamasa) {
     return flakes;
 }
 
-rasper.prototype.cut = function(samasa) {
+vigraha.prototype.pdchs = function(samasa) {
     var that = this;
     var salat = salita.sa2slp(samasa);
     var pdchs = [];
