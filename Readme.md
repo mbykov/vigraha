@@ -14,13 +14,19 @@ $ npm install vigraha
 
 ````javascript
 var vigraha = require('vigraha');
+var chains = vigraha.pdchs(samasa);
+console.log(chains);
 ````
+
+
+## CLI
 
 ````javascript
 $ node run vihAya
 or if you like
 $ node run विहाय
 ````
+
 
 
 ## Running node tests
